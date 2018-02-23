@@ -33,7 +33,7 @@ class MyObject extends CGFobject
 
 		this.createBox(-0.5,-0.5,-0.5,
 							0.5,0.5,0.5);
-		//this.createRectangle(0,0,0,1,0,0,0,1,0,1,1,0);
+		//this.createRectangle(0,0,0,1,0,0,1,1,0,0,1,0);
 
 		this.primitiveType=this.scene.gl.TRIANGLES;
 		this.initGLBuffers();
@@ -63,7 +63,7 @@ class MyObject extends CGFobject
 
 	createRectangle(x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4){
 			this.createTriangle(x1,y1,z1,x2,y2,z2,x3,y3,z3);
-			this.createTriangle(x2,y2,z2,x4,y4,z4,x3,y3,z3);
+			this.createTriangle(x3,y3,z3,x4,y4,z4,x1,y1,z1);
 	}
 
 	createBox(x1,y1,z1,x2,y2,z2){
@@ -82,32 +82,32 @@ class MyObject extends CGFobject
 		//create Top and bottom rectangles
 		this.createRectangle(x1,y1,z1,
 							x1,y1,z2,
-							x2,y1,z1,
-							x2,y1,z2);
+							x2,y1,z2,
+							x2,y1,z1,);
 		this.createRectangle(x1,y2,z2,
 							x1,y2,z1,
-							x2,y2,z2,
-							x2,y2,z1,);
+							x2,y2,z1,
+							x2,y2,z2);
 
 		//create Side rectangles
 		this.createRectangle(x1,y2,z1,
 							x1,y2,z2,
-							x1,y1,z1,
-							x1,y1,z2);
+							x1,y1,z2,
+							x1,y1,z1);
 		this.createRectangle(x2,y2,z2,
 							x2,y2,z1,
-							x2,y1,z2,
-							x2,y1,z1);
+							x2,y1,z1,
+							x2,y1,z2);
 
 		//create front and back rectangles
 		this.createRectangle(x2,y1,z1,
 							x2,y2,z1,
-							x1,y1,z1,
-							x1,y2,z1);
+							x1,y2,z1,
+							x1,y1,z1);
 		this.createRectangle(x2,y2,z2,
 							x2,y1,z2,
-							x1,y2,z2,
-							x1,y1,z2);					
+							x1,y1,z2,
+							x1,y2,z2);					
 		
 	}
 
