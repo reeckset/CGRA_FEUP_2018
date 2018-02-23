@@ -22,18 +22,22 @@ class MyObject extends CGFobject
 				];
 
 		this.indices = [
-				0, 1, 2,
-				3, 2, 1,
-				2, 0, 4
+				//0, 1, 2,
+				//3, 2, 1
 			];
+		
+		
+		/*this.createTriangle(0,1.5,0,
+							-1,0.5,0,
+							1,0.5,0);*/
 
-		this.createTriangle(0,1.5,0,
-									 			-1,0.5,0,
-								 	 			1,0.5,0);
-		this.extract(0,0,4);
+		this.createBox(-0.5,-0.5,-0.5,
+							0.5,0.5,0.5);
+		//this.createRectangle(0,0,0,1,0,0,0,1,0,1,1,0);
 
 		this.primitiveType=this.scene.gl.TRIANGLES;
 		this.initGLBuffers();
+
 	};
 
 	createTriangle(x1, y1, z1, x2, y2, z2, x3, y3, z3){
@@ -41,10 +45,8 @@ class MyObject extends CGFobject
 										this.insertInArray(x2,y2,z2, this.vertices)/3,
 										this.insertInArray(x3,y3,z3, this.vertices)/3,
 										this.indices);
-			this.insertInArray(this.insertInArray(x3,y3,z3, this.vertices)/3,
-										this.insertInArray(x2,y2,z2, this.vertices)/3,
-										this.insertInArray(x1,y1,z1, this.vertices)/3,
-										this.indices);
+			//this.updateTexCoordsGLBuffers( );
+								
 	};
 
 	insertInArray(x, y, z, array){
@@ -61,7 +63,52 @@ class MyObject extends CGFobject
 
 	createRectangle(x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4){
 			this.createTriangle(x1,y1,z1,x2,y2,z2,x3,y3,z3);
-			this.createTriangle(x3,y3,z3,x2,y2,z2,x4,y4,z4);
+			this.createTriangle(x2,y2,z2,x4,y4,z4,x3,y3,z3);
+	}
+
+	createBox(x1,y1,z1,x2,y2,z2){
+		//make 1(x,y,z) be the point with lower y
+		if(y1 < y2){
+			let tempX = x2;
+			let tempY = y2;
+			let tempZ = z2;
+			x2 = x1;
+			y2 = y1;
+			z2 = z1;
+			x1 = tempX;
+			y1 = tempY;
+			z1 = tempZ;
+		}
+		//create Top and bottom rectangles
+		this.createRectangle(x1,y1,z1,
+							x1,y1,z2,
+							x2,y1,z1,
+							x2,y1,z2);
+		this.createRectangle(x1,y2,z2,
+							x1,y2,z1,
+							x2,y2,z2,
+							x2,y2,z1,);
+
+		//create Side rectangles
+		this.createRectangle(x1,y2,z1,
+							x1,y2,z2,
+							x1,y1,z1,
+							x1,y1,z2);
+		this.createRectangle(x2,y2,z2,
+							x2,y2,z1,
+							x2,y1,z2,
+							x2,y1,z1);
+
+		//create front and back rectangles
+		this.createRectangle(x2,y1,z1,
+							x2,y2,z1,
+							x1,y1,z1,
+							x1,y2,z1);
+		this.createRectangle(x2,y2,z2,
+							x2,y1,z2,
+							x1,y2,z2,
+							x1,y1,z2);					
+		
 	}
 
 	extract(dx, dy, dz){
