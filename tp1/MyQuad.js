@@ -4,7 +4,7 @@
  * @constructor
  */
 
-class MyObject extends CGFobject
+class MyQuad extends CGFobject
 {
 	constructor(scene)
 	{
@@ -28,5 +28,6 @@ class MyObject extends CGFobject
 
 		this.primitiveType=this.scene.gl.TRIANGLES;
 		this.initGLBuffers();
-}
+
+	};
 };

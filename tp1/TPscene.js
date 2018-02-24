@@ -22,7 +22,7 @@ class TPscene extends CGFscene
         this.gl.depthFunc(this.gl.LEQUAL);
 
         this.axis=new CGFaxis(this);
-        this.obj = new MyObject(this);
+        this.obj = new MyUnitCubeQuad(this);
 
 
         // NOTE: OpenGL transformation matrices are transposed
