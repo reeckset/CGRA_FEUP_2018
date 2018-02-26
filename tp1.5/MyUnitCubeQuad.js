@@ -15,9 +15,7 @@ class MyUnitCubeQuad extends CGFobject
 	};
 
 	display(){
-		//Could have this.scene.pushMatrix() (and then pop after the for loop)
-		//but the final matrix happens to be the same as the initial one,
-		//so we chose not to do it for efficiency
+		this.scene.pushMatrix();
 		for(var i = 0; i < 6; i++){
 			this.scene.rotate(Math.PI/2, i % 2, (i+1) % 2, 0);
 			this.scene.pushMatrix();
@@ -25,5 +23,6 @@ class MyUnitCubeQuad extends CGFobject
 			this.quad.display();
 			this.scene.popMatrix();
 		}
+		this.scene.popMatrix();
 	}
 };
