@@ -22,7 +22,7 @@ class TPscene extends CGFscene
         this.gl.depthFunc(this.gl.LEQUAL);
 
         this.axis=new CGFaxis(this);
-        this.obj = new MyUnitCubeQuad(this);
+        this.obj = new MyObject(this);
 
 
         // NOTE: OpenGL transformation matrices are transposed
@@ -88,7 +88,7 @@ class TPscene extends CGFscene
         this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
-        // Initialize Model-View matrix as identity (no transformation
+        // Initialize Model-View matrix as identity (no transformation)
         this.updateProjectionMatrix();
         this.loadIdentity();
 
@@ -99,15 +99,26 @@ class TPscene extends CGFscene
         this.axis.display();
 
         this.setDefaultAppearance();
+
         // ---- END Background, camera and axis setup
 
 
         // ---- BEGIN Geometric transformation section
 
         // Multiplication of the previous transformations
-        //this.multMatrix(this.tra);     // GT = GT * tra
-        //this.multMatrix(this.rot);     // GT = GT * rot
-        //this.multMatrix(this.sca);     // GT = GT * sca
+        // this.multMatrix(this.tra);     // GT = GT * tra
+        // this.multMatrix(this.rot);     // GT = GT * rot
+        // this.multMatrix(this.sca);     // GT = GT * sca
+
+        this.pushMatrix();
+        this.translate(0, 5, 0);          // Translate 5 units in Oy
+        this.obj.display();
+
+        this.popMatrix();
+        this.scale(5,2,1);           // GT = GT * sca
+        this.translate(5, 0, 2);     // GT = GT * tra
+        // this.rotate(30.0 * Math.PI/180.0, 0, 1, 0);    // GT = GT * rot
+
         // ---- END Geometric transformation section
 
 

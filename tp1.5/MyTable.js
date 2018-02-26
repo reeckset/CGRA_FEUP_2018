@@ -21,9 +21,9 @@ class MyTable extends CGFobject
 
 
 	display(){
-			var legAbsoluteX = this.tableSizeX/2 - this.legSide/2;
+			var legAbsoluteX = this.tableSizeX/2 - this.legSide/2; //To align leg side with table top
 			var legAbsoluteZ = this.tableSizeZ/2 - this.legSide/2;
-			
+
 			this.displayLeg(legAbsoluteX,0,legAbsoluteZ);
 			this.displayLeg(legAbsoluteX,0,-legAbsoluteZ);
 			this.displayLeg(-legAbsoluteX,0,legAbsoluteZ);
