@@ -1,57 +1,28 @@
 /**
- * MyUnitCubeQuad
+ * MyObject
+ * @param gl {WebGLRenderingContext}
  * @constructor
  */
+
 class MyUnitCubeQuad extends CGFobject
 {
-	constructor(scene) 
+	constructor(scene)
 	{
 		super(scene);
 
 		this.quad = new MyQuad(this.scene);
+		this.quad.initBuffers();
 	};
 
-	display() 
-	{
-		// front face
+	display(){
 		this.scene.pushMatrix();
-		this.scene.translate(0, 0, 0.5);
-		this.quad.display();
+		for(var i = 0; i < 6; i++){
+			this.scene.rotate(Math.PI/2, i % 2, (i+1) % 2, 0);
+			this.scene.pushMatrix();
+			this.scene.translate(0,0,0.5);
+			this.quad.display();
+			this.scene.popMatrix();
+		}
 		this.scene.popMatrix();
-
-		// back face
-		this.scene.pushMatrix();
-		this.scene.rotate(180 * degToRad, 1, 0, 0);
-		this.scene.translate(0, 0, 0.5);
-		this.quad.display();
-		this.scene.popMatrix();
-
-		// top face
-		this.scene.pushMatrix();
-		this.scene.rotate(-90 * degToRad, 1, 0, 0);
-		this.scene.translate(0, 0, 0.5);
-		this.quad.display();
-		this.scene.popMatrix();
-
-		// back face
-		this.scene.pushMatrix();
-		this.scene.rotate(90 * degToRad, 1, 0, 0);
-		this.scene.translate(0, 0, 0.5);
-		this.quad.display();
-		this.scene.popMatrix();
-
-		// right face
-		this.scene.pushMatrix();
-		this.scene.rotate(-90 * degToRad, 0, 1, 0);
-		this.scene.translate(0, 0, 0.5);
-		this.quad.display();
-		this.scene.popMatrix();
-
-		// left face
-		this.scene.pushMatrix();
-		this.scene.rotate(90 * degToRad, 0, 1, 0);
-		this.scene.translate(0, 0, 0.5);
-		this.quad.display();
-		this.scene.popMatrix();
-	};
+	}
 };
