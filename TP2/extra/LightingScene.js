@@ -58,6 +58,11 @@ class LightingScene extends CGFscene
 		this.materialC.setDiffuse(0.4,0.4,0.4,1);
 		this.materialC.setSpecular(0.05,0.05,0.05,1);
 
+		this.wallMaterial = new CGFappearance(this);
+		this.wallMaterial.setAmbient(0.8,0.8,0.6,1);
+		this.wallMaterial.setDiffuse(0.8,0.8,0.6,1);
+		this.wallMaterial.setSpecular(0.05,0.05,0.05,1);
+
 	};
 
 	initCameras()
@@ -78,7 +83,7 @@ class LightingScene extends CGFscene
 
 		this.lights[2].setPosition(10.5, 6.0, 5.0, 1.0);
 		this.lights[2].setVisible(true); // show marker on light position (different from enabled)
-		this.lights[2].setLinearAttenuation(1.0);
+		this.lights[2].setLinearAttenuation(1);
 		this.lights[2].setConstantAttenuation(0);
 		this.lights[2].setQuadraticAttenuation(0);
 
@@ -103,8 +108,8 @@ class LightingScene extends CGFscene
 		this.lights[3].setDiffuse(1.0, 0.9, 0.5, 1.0);
 		this.lights[3].setSpecular(1,1,1,1);
 		this.lights[3].enable();
-		this.lights[3].setLinearAttenuation(0);
 		this.lights[3].setConstantAttenuation(1);
+		this.lights[3].setLinearAttenuation(0);
 		this.lights[3].setQuadraticAttenuation(0);
 	};
 
@@ -156,6 +161,7 @@ class LightingScene extends CGFscene
 			this.translate(0, 4, 7.5);
 			this.rotate(90 * degToRad, 0, 1, 0);
 			this.scale(15, 8, 0.2);
+			this.wallMaterial.apply();
 			this.wall.display();
 		this.popMatrix();
 
@@ -163,6 +169,7 @@ class LightingScene extends CGFscene
 		this.pushMatrix();
 			this.translate(7.5, 4, 0);
 			this.scale(15, 8, 0.2);
+			this.wallMaterial.apply();
 			this.wall.display();
 		this.popMatrix();
 
