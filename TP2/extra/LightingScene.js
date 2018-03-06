@@ -33,6 +33,7 @@ class LightingScene extends CGFscene
 		this.table = new MyTable(this);
 		this.wall = new Plane(this);
 		this.floor = new MyQuad(this);
+		this.chair = new MyChair(this);
 
 		this.boardA = new Plane(this, BOARD_A_DIVISIONS);
 		this.boardB = new Plane(this, BOARD_B_DIVISIONS);
@@ -43,7 +44,7 @@ class LightingScene extends CGFscene
 		this.materialA = new CGFappearance(this);
 		this.materialA.setAmbient(0.3,0.3,0.3,1);
 		this.materialA.setDiffuse(0.6,0.6,0.6,1);
-		this.materialA.setSpecular(0,0.2,0.8,1);
+		this.materialA.setSpecular(0.1,0.1,0.1,1);
 		this.materialA.setShininess(120);
 
 		this.materialB = new CGFappearance(this);
@@ -51,6 +52,11 @@ class LightingScene extends CGFscene
 		this.materialB.setDiffuse(0.6,0.6,0.6,1);
 		this.materialB.setSpecular(0.8,0.8,0.8,1);
 		this.materialB.setShininess(120);
+
+		this.materialC = new CGFappearance(this);
+		this.materialC.setAmbient(0.1,0.1,0.1,1);
+		this.materialC.setDiffuse(0.4,0.4,0.4,1);
+		this.materialC.setSpecular(0.05,0.05,0.05,1);
 
 	};
 
@@ -88,18 +94,18 @@ class LightingScene extends CGFscene
 		this.lights[1].setDiffuse(1.0, 1.0, 1.0, 1.0);
 		this.lights[1].enable();
 
-		this.lights[2].setAmbient(0, 0, 0, 1);
+		this.lights[2].setAmbient(0.2, 0.2, 0.2, 1);
 		this.lights[2].setDiffuse(1.0, 1.0, 1.0, 1.0);
 		this.lights[2].setSpecular(1.0,1.0,1.0,1.0);
 		this.lights[2].enable();
 
-		this.lights[3].setAmbient(0, 0, 0, 1);
-		this.lights[3].setDiffuse(1.0, 1.0, 1.0, 1.0);
-		this.lights[3].setSpecular(1,1,0,1);
+		this.lights[3].setAmbient(0.2, 0.2, 0.2, 1);
+		this.lights[3].setDiffuse(1.0, 0.9, 0.5, 1.0);
+		this.lights[3].setSpecular(1,1,1,1);
 		this.lights[3].enable();
 		this.lights[3].setLinearAttenuation(0);
-		this.lights[3].setConstantAttenuation(0);
-		this.lights[3].setQuadraticAttenuation(0.2);
+		this.lights[3].setConstantAttenuation(1);
+		this.lights[3].setQuadraticAttenuation(0);
 	};
 
 	updateLights()
@@ -141,6 +147,7 @@ class LightingScene extends CGFscene
 			this.translate(7.5, 0, 7.5);
 			this.rotate(-90 * degToRad, 1, 0, 0);
 			this.scale(15, 15, 0.2);
+			this.materialC.apply();
 			this.floor.display();
 		this.popMatrix();
 
@@ -187,6 +194,18 @@ class LightingScene extends CGFscene
 
 			this.materialB.apply();
 			this.boardB.display();
+		this.popMatrix();
+
+		// Chair B
+		this.pushMatrix();
+			this.translate(12, 0, 10);
+			this.chair.display();
+		this.popMatrix();
+
+		// Chair A
+		this.pushMatrix();
+			this.translate(5, 0, 10);
+			this.chair.display();
 		this.popMatrix();
 
 		// ---- END Scene drawing section
