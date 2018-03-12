@@ -33,7 +33,6 @@ class LightingScene extends CGFscene
 		this.table = new MyTable(this);
 		this.wall = new Plane(this);
 		this.floor = new MyQuad(this);
-		this.chair = new MyChair(this);
 
 		this.boardA = new Plane(this, BOARD_A_DIVISIONS);
 		this.boardB = new Plane(this, BOARD_B_DIVISIONS);
@@ -188,15 +187,6 @@ class LightingScene extends CGFscene
 
 			this.materialB.apply();
 			this.boardB.display();
-		this.popMatrix();
-
-		// Board B
-		this.pushMatrix();
-			this.translate(10.5, 4.5, 0.2);
-			this.scale(BOARD_WIDTH, BOARD_HEIGHT, 1);
-
-			this.materialB.apply();
-			this.chair.display();
 		this.popMatrix();
 
 		// ---- END Scene drawing section
