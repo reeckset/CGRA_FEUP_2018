@@ -16,7 +16,22 @@ class MyTable extends CGFobject
 		this.tableSizeX = 5;
 		this.tableSizeZ = 3;
 		this.legSide = 0.3;
+
+		this.materialTampoMesa = new CGFappearance(this.scene);
+		this.materialTampoMesa.setAmbient(0.25,0.1,0.1,1);
+		this.materialTampoMesa.setDiffuse(0.25,0.1,0.1,1);
+		this.materialTampoMesa.setSpecular(0.25,0.1,0.1,1);
+		this.materialTampoMesa.setShininess(30);
+
+		this.materialPerna = new CGFappearance(this.scene);
+		this.materialPerna.setAmbient(0.8,0.8,0.8,1);
+		this.materialPerna.setDiffuse(0.8,0.8,0.8,1);
+		this.materialPerna.setSpecular(0.8,0.8,0.8,1);
+		this.materialPerna.setShininess(120);
+
 	};
+
+
 
 
 
@@ -37,6 +52,7 @@ class MyTable extends CGFobject
 		this.scene.translate(x,y,z);
 		this.scene.scale(0.3, 3.5, 0.3);
 		this.scene.translate(0, 0.5, 0);
+		this.materialPerna.apply();
 		this.unitCubeQuad.display();
 
 		this.scene.popMatrix();
@@ -48,6 +64,7 @@ class MyTable extends CGFobject
 		this.scene.translate(x,y,z);
 		this.scene.scale(5,0.3,3);
 		this.scene.translate(0,0.5,0);
+		this.materialTampoMesa.apply();
 		this.unitCubeQuad.display();
 
 		this.scene.popMatrix();
