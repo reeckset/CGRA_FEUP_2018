@@ -32,9 +32,6 @@ class LightingScene extends CGFscene
 		// Scene elements
 		this.myPrism = new MyPrism(this, 8, 20);
 
-		this.boardA = new Plane(this, BOARD_A_DIVISIONS);
-		this.boardB = new Plane(this, BOARD_B_DIVISIONS);
-
 		// Materials
 		this.materialDefault = new CGFappearance(this);
 		this.materialDefault.setDiffuse(1,1,1,1);

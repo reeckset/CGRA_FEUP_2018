@@ -36,20 +36,13 @@ class MyCylinder extends CGFobject
 
 			//set first two vertices
 			this.createVertices(0);
-
 			for(let i = 1; i <= this.slices; i++){ //add slices
-
 				this.createVertices(angle*i);
-
 				for(let stack = 0; stack < this.stacks; stack++){ //add stacks
 					let index = (i*(this.stacks+1)+stack);
 					this.addQuadIndexes(index);
 				}
 			}
-
-			console.dir(this.vertices);
-			console.dir(this.indices);
-			console.dir(this.normals);
 	}
 
 	addQuadNormal(angle){

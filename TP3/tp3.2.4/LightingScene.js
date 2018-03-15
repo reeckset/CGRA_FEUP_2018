@@ -30,8 +30,8 @@ class LightingScene extends CGFscene
 		this.axis = new CGFaxis(this);
 
 		// Scene elements
-		this.myPrism = new MyPrism(this, 16, 20);
-		this.myCylinder = new MyCylinder(this, 16, 20);
+		this.myPrism = new MyPrism(this, 8, 20);
+		this.myCylinder = new MyCylinder(this, 8, 20);
 
 		// Materials
 		this.materialDefault = new CGFappearance(this);
@@ -68,7 +68,7 @@ class LightingScene extends CGFscene
 
 	initLights()
 	{
-		this.setGlobalAmbientLight(0.6,0.6,0.6, 1.0);
+		this.setGlobalAmbientLight(0,0,0, 1.0);
 
 		// Positions for four lights
 		this.lights[0].setPosition(4, 6, 2, 1);
@@ -121,20 +121,15 @@ class LightingScene extends CGFscene
 		// ---- BEGIN Scene drawing section
 
 		this.pushMatrix();
-		this.scale(1.5,3,1.5);
-		this.rotate(Math.PI/2, 1,0,0);
 		this.materialA.apply();
-		this.myCylinder.display();
-		this.popMatrix();
-
-		this.pushMatrix();
-		this.translate(5, 0, 0);
-		this.scale(1.5,3,1.5);
+		this.scale(1.5,5,1.5);
 		this.rotate(Math.PI/2, 1,0,0);
-		this.materialA.apply();
+			this.pushMatrix();
+			this.translate(4, 0, 0);
+			this.myCylinder.display();
+			this.popMatrix();
 		this.myPrism.display();
 		this.popMatrix();
-
 		// ---- END Scene drawing section
 	};
 };
