@@ -48,9 +48,14 @@ class MyLamp extends CGFobject
 
 	}
 
-  addQuadIndexes(firstIndex){
+  addQuadIndexes(firstIndex){ //creates
     this.indices.push(firstIndex-this.slices, firstIndex-this.slices - 1, firstIndex);
     this.indices.push(firstIndex, firstIndex-this.slices - 1, firstIndex - 1);
+  }
+
+	addLastQuadIndexes(firstIndex){ //For joining the first and last vertices of a slice with the ones on the previous stack
+    this.indices.push(firstIndex+this.slices - 1, firstIndex, firstIndex - 1);
+    this.indices.push(firstIndex - 1, firstIndex, firstIndex - this.slices);
   }
 
   // beta is the current angle, createQuads is a flag that specifies if the indexes can be generated
@@ -65,7 +70,7 @@ class MyLamp extends CGFobject
     console.log("currBeta: " + currBeta);
 
     //Generate remaining vertexes and faces, joining them
-    for (var a = 1; a <= this.slices; a++) {
+    for (var a = 1; a < this.slices; a++) {
 
       let currAlpha =(a*this.alpha);
       console.log("currAlpha: " + currAlpha);
@@ -74,10 +79,14 @@ class MyLamp extends CGFobject
       this.createVertex(currAlpha, currBeta);
 
       if(createQuads) {
-        this.addQuadIndexes(b * this.slices + a)
+        this.addQuadIndexes(b * this.slices + a);
       }
 
     }
+		if(createQuads) {
+			this.addLastQuadIndexes(b * this.slices);
+		}
+
   }
 
   createVertex(currAlpha, currBeta) {
