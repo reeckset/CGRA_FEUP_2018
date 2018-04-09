@@ -21,7 +21,9 @@ class MyCylinder extends CGFobject
 
 		this.primitiveType=this.scene.gl.TRIANGLES;
 
-		this.normals = []
+		this.normals = [];
+
+		this.texCoords = [];
 
 		this.generateCylinder();
 
@@ -34,15 +36,25 @@ class MyCylinder extends CGFobject
 	generateCylinder(){
 			let angle = (Math.PI*2) / this.slices;
 
+			this.texPatchLengthS = 1/this.slices;
+			this.texPatchLengthT = 1/this.stacks;
+
+			let sTexCoord = 0;
 			//set first two vertices
 			this.createVertices(0);
 			for(let i = 1; i <= this.slices; i++){ //add slices
+				let tTexCoord = 0;
 				this.createVertices(angle*i);
 				for(let stack = 0; stack < this.stacks; stack++){ //add stacks
 					let index = (i*(this.stacks+1)+stack);
 					this.addQuadIndexes(index);
+
+					this.texCoords.push(sTexCoord, -tTexCoord);
+					tTexCoord += this.texPatchLengthT;
 				}
+				sTexCoord += this.texPatchLengthS;
 			}
+			this.createVertices(0);
 	}
 
 	addQuadNormal(angle){

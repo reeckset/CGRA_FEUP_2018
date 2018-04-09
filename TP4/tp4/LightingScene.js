@@ -32,8 +32,8 @@ class LightingScene extends CGFscene
 		this.axis = new CGFaxis(this);
 
 		// Scene elements
-		this.myPrism = new MyPrism(this, 8, 20);
-		this.myCylinder = new MyCylinder(this, 8, 20);
+		this.myCylinderA = new MyCylinder(this, 8, 20);
+		this.myCylinderB = new MyCylinder(this, 8, 20);
 		this.table = new MyTable(this, 0, 1, 0, 1);
 		this.wall = new Plane(this);
 		this.leftWall = new MyQuad(this, -0.5, 1.5, -0.5, 1.5);
@@ -41,8 +41,8 @@ class LightingScene extends CGFscene
 		this.chair = new MyChair(this);
 		this.lamp = new MyLamp(this, 10, 10);
 
-		this.boardA = new Plane(this, BOARD_A_DIVISIONS);
-		this.boardB = new Plane(this, BOARD_B_DIVISIONS);
+		this.boardA = new Plane(this, BOARD_A_DIVISIONS, -1/6, 7/6, 0,1, 'CLAMP_TO_EDGE');
+		this.boardB = new Plane(this, BOARD_B_DIVISIONS, 0,1,0,1);
 
 		// Materials
 		this.materialDefault = new CGFappearance(this);
@@ -74,6 +74,7 @@ class LightingScene extends CGFscene
 		this.columnMaterial.setAmbient(0.8,0.8,0.8,1);
 		this.columnMaterial.setDiffuse(0.8,0.8,0.8,1);
 		this.columnMaterial.setSpecular(0,0,0,1);
+		this.columnMaterial.loadTexture('../resources/images/column.jpg');
 
 		this.lampMaterial = new CGFappearance(this);
 		this.lampMaterial.setAmbient(0.9,0.9,0.5,1);
@@ -101,6 +102,7 @@ class LightingScene extends CGFscene
 		this.slidesAppearance.setSpecular(0,0,0,1);
 		this.slidesAppearance.setShininess(20);
 		this.slidesAppearance.loadTexture('../resources/images/slides.png');
+		this.slidesAppearance.setTextureWrap('CLAMP_TO_EDGE', 'CLAMP_TO_EDGE');
 
 		this.boardAppearance = new CGFappearance(this);
 		this.boardAppearance.setAmbient(0.8,0.8,0.8,1);
@@ -261,9 +263,9 @@ class LightingScene extends CGFscene
 		this.rotate(Math.PI/2, 1,0,0);
 		this.pushMatrix();
 		this.translate(13, 0, 0);
-		this.myCylinder.display();
+		this.myCylinderA.display();
 		this.popMatrix();
-		this.myPrism.display();
+		this.myCylinderB.display();
 		this.popMatrix();
 
 		//Lamp
