@@ -16,8 +16,10 @@ class MyUnitCubeQuad extends CGFobject
 
 	display(){
 		this.scene.pushMatrix();
+		this.scene.rotate(Math.PI/2, 1, 0, 0);
 		for(var i = 0; i < 6; i++){
-			this.scene.rotate(Math.PI/2, i % 2, (i+1) % 2, 0);
+			this.scene.rotate(Math.PI/2, (i+1) % 2, i % 2, 0);
+			this.scene.rotate(Math.PI/2, i % 2, 0, (i+1) % 2);
 			this.scene.pushMatrix();
 			this.scene.translate(0,0,0.5);
 			this.quad.display();
