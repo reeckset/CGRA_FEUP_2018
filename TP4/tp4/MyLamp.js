@@ -42,10 +42,6 @@ class MyLamp extends CGFobject
         this.createStack(b, true);
       }
 
-      console.dir(this.vertices);
-      console.dir(this.indices);
-
-
 	}
 
   addQuadIndexes(firstIndex){ //creates
@@ -66,15 +62,11 @@ class MyLamp extends CGFobject
     // (must be done because on the first iteration, the vertex has nothing to connect to, to create a face)
     let currBeta = (b*this.beta);
     this.createVertex(0, currBeta);
-    console.log("currAlpha: " + 0);
-    console.log("currBeta: " + currBeta);
 
     //Generate remaining vertexes and faces, joining them
     for (var a = 1; a < this.slices; a++) {
 
       let currAlpha =(a*this.alpha);
-      console.log("currAlpha: " + currAlpha);
-      console.log("currBeta: " + currBeta);
 
       this.createVertex(currAlpha, currBeta);
 
