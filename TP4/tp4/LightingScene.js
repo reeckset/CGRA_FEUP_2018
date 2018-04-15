@@ -35,7 +35,7 @@ class LightingScene extends CGFscene
 		this.myCylinderA = new MyCylinder(this, 8, 20);
 		this.myCylinderB = new MyCylinder(this, 8, 20);
 		this.table = new MyTable(this, 0, 1, 0, 1);
-		this.wall = new Plane(this);
+		this.wall = new Plane(this, 10, 0,1,0,1);
 		this.leftWall = new MyQuad(this, -0.5, 1.5, -0.5, 1.5);
 		this.floor = new MyQuad(this, 0, 10, 0, 12);
 		this.chair = new MyChair(this);
@@ -69,12 +69,13 @@ class LightingScene extends CGFscene
 		this.wallMaterial.setAmbient(0.8,0.8,0.6,1);
 		this.wallMaterial.setDiffuse(0.8,0.8,0.6,1);
 		this.wallMaterial.setSpecular(0.05,0.05,0.05,1);
+		this.wallMaterial.loadTexture('../resources/images/wall.jpg');
 
 		this.columnMaterial = new CGFappearance(this);
 		this.columnMaterial.setAmbient(0.8,0.8,0.8,1);
 		this.columnMaterial.setDiffuse(0.8,0.8,0.8,1);
 		this.columnMaterial.setSpecular(0,0,0,1);
-		this.columnMaterial.loadTexture('../resources/images/board.png');
+		this.columnMaterial.loadTexture('../resources/images/lava.jpg');
 
 		this.lampMaterial = new CGFappearance(this);
 		this.lampMaterial.setAmbient(0.9,0.9,0.5,1);
@@ -110,6 +111,8 @@ class LightingScene extends CGFscene
 		this.boardAppearance.setSpecular(0,0,0,1);
 		this.boardAppearance.setShininess(20);
 		this.boardAppearance.loadTexture('../resources/images/board.png');
+
+
 
 	};
 
