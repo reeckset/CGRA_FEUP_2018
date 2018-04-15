@@ -74,7 +74,7 @@ class LightingScene extends CGFscene
 		this.columnMaterial.setAmbient(0.8,0.8,0.8,1);
 		this.columnMaterial.setDiffuse(0.8,0.8,0.8,1);
 		this.columnMaterial.setSpecular(0,0,0,1);
-		this.columnMaterial.loadTexture('../resources/images/column.jpg');
+		this.columnMaterial.loadTexture('../resources/images/board.png');
 
 		this.lampMaterial = new CGFappearance(this);
 		this.lampMaterial.setAmbient(0.9,0.9,0.5,1);

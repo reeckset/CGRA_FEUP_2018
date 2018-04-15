@@ -14,7 +14,7 @@ class MyCylinder extends CGFobject
 			this.stacks = stacks;
 			this.patchLengthS = 1/slices;
 			this.patchLengthT = 1/stacks;
-			this.currS = 0;
+			this.currS = 1;
 			this.initBuffers();
 	}
 		initBuffers(){
@@ -64,9 +64,9 @@ class MyCylinder extends CGFobject
 		for(let stack = 0; stack <= this.stacks; stack++){ //add stacks
 			this.vertices.push(Math.cos(angle), Math.sin(angle), 0.5-stack*stackSize);
 			//add Normals
-			this.texCoords.push(this.currS, this.patchLengthT*stack);
+			this.texCoords.push(this.currS, this.patchLengthT*(this.stacks-stack));
 			this.addQuadNormal(angle);
 		}
-		this.currS += this.patchLengthS;
+		this.currS -= this.patchLengthS;
 	}
 };
