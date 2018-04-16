@@ -35,6 +35,7 @@ class LightingScene extends CGFscene
 		this.myCylinderA = new MyCylinder(this, 8, 20);
 		this.myCylinderB = new MyCylinder(this, 8, 20);
 		this.myClock = new MyClock(this, 12, 1, '../resources/images/clock.png');
+		this.myClockHand = new MyClockHand(this, 12, 1);
 		this.table = new MyTable(this, 0, 1, 0, 1);
 		this.wall = new Plane(this, 10, 0,1,0,1);
 		this.leftWall = new MyQuad(this, -0.5, 1.5, -0.5, 1.5);
@@ -286,6 +287,8 @@ class LightingScene extends CGFscene
 			this.scale(0.5,0.5,0.1);
 			this.myClock.display();
 		this.popMatrix();
+
+		this.materialDefault.apply();
 
 		// ---- END Scene drawing section
 	};
