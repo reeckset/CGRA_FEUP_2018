@@ -6,6 +6,8 @@ var BOARD_HEIGHT = 4.0;
 var BOARD_A_DIVISIONS = 30;
 var BOARD_B_DIVISIONS = 100;
 
+var fps = 10;
+
 class LightingScene extends CGFscene
 {
 	constructor()
@@ -23,6 +25,9 @@ class LightingScene extends CGFscene
 
 		this.enableTextures(true);
 
+		this.updatePeriod = 1000/fps;
+		this.lastTime = 0;
+
 		this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
 		this.gl.clearDepth(100.0);
 		this.gl.enable(this.gl.DEPTH_TEST);
@@ -35,7 +40,6 @@ class LightingScene extends CGFscene
 		this.myCylinderA = new MyCylinder(this, 8, 20);
 		this.myCylinderB = new MyCylinder(this, 8, 20);
 		this.myClock = new MyClock(this, 12, 1, '../resources/images/clock.png');
-		this.myClockHand = new MyClockHand(this, 12, 1);
 		this.table = new MyTable(this, 0, 1, 0, 1);
 		this.wall = new Plane(this, 10, 0,1,0,1);
 		this.leftWall = new MyQuad(this, -0.5, 1.5, -0.5, 1.5);
@@ -283,13 +287,18 @@ class LightingScene extends CGFscene
 
 		//MyClock
 		this.pushMatrix();
-			this.translate(7.25,7.25,0.1);
-			this.scale(0.5,0.5,0.1);
-			this.myClock.display();
+		this.translate(7.25,7.25,0.1);
+		this.myClock.display();
 		this.popMatrix();
 
 		this.materialDefault.apply();
 
 		// ---- END Scene drawing section
 	};
+
+	update(currTime){
+		var dTime = currTime - this.lastTime;
+		this.lastTime = currTime;
+		this.myClock.update(dTime);
+	}
 };
