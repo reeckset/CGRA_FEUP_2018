@@ -42,7 +42,7 @@ class MyCylinderSide extends CGFobject
 			this.createVertices(0);
 			for(let i = 1; i <= this.slices; i++){ //add slices
 				this.createVertices(angle*i);
-				for(let stack = 0; stack < this.stacks; stack++){ //add stacks
+				for(let stack = 0; stack < this.stacks; stack++){ //add indexes
 					let index = (i*(this.stacks+1)+stack);
 					this.addQuadIndexes(index);
 				}
@@ -54,14 +54,14 @@ class MyCylinderSide extends CGFobject
 	}
 
 	addQuadIndexes(firstIndex){
-		this.indices.push(firstIndex-this.stacks-1, firstIndex-this.stacks, firstIndex);
-		this.indices.push(firstIndex-this.stacks, firstIndex+1, firstIndex);
+		this.indices.push(firstIndex-this.stacks, firstIndex-this.stacks-1, firstIndex);
+		this.indices.push(firstIndex+1, firstIndex-this.stacks, firstIndex);
 	}
 
 	createVertices(angle){
 		let stackSize = 1.0/this.stacks;
 		for(let stack = 0; stack <= this.stacks; stack++){ //add stacks
-			this.vertices.push(Math.cos(angle), Math.sin(angle), 0.5-stack*stackSize);
+			this.vertices.push(Math.cos(angle), Math.sin(angle), stack*stackSize);
 			//add Normals
 			this.texCoords.push(this.currS, this.patchLengthT*(this.stacks-stack));
 			this.addQuadNormal(angle);

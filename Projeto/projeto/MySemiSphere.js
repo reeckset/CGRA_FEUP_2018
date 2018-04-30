@@ -4,16 +4,17 @@
  * @constructor
  */
 
-class MyLamp extends CGFobject
+class MySemiSphere extends CGFobject
 {
 
-	constructor(scene, slices, stacks)
+	constructor(scene, slices, stacks, texture)
 	{
 			super(scene);
 			this.slices = slices;
 			this.stacks = stacks;
       this.alpha = (Math.PI*2) / this.slices; // rotates on xOz plane
       this.beta = (Math.PI / 2) / this.stacks; // rotates on xOy plane
+			this.createMaterial(texture);
 			this.initBuffers();
 	}
 	initBuffers(){
@@ -23,14 +24,19 @@ class MyLamp extends CGFobject
 
 	this.primitiveType=this.scene.gl.TRIANGLES;
 
-	this.normals = []
+	this.normals = [];
+
+	this.texCoords = [];
 
 	this.generateLamp();
 
 	this.initGLBuffers();
 }
 
-
+	displayTextured(){
+		this.material.apply();
+		this.display();
+	}
 
 
 	generateLamp(){
@@ -82,18 +88,23 @@ class MyLamp extends CGFobject
   }
 
   createVertex(currAlpha, currBeta) {
-    this.vertices.push(
-      Math.cos(currBeta)*Math.cos(currAlpha), // x
-      Math.sin(currBeta), // y
-      Math.cos(currBeta)*Math.sin(currAlpha) // z
-    );
+		let x = Math.cos(currBeta)*Math.cos(currAlpha);
+		let y = Math.sin(currBeta);
+		let z =   Math.cos(currBeta)*Math.sin(currAlpha);
 
-    this.normals.push(
-      Math.cos(currBeta)*Math.cos(currAlpha), // x
-      Math.sin(currBeta), // y
-      Math.cos(currBeta)*Math.sin(currAlpha) // z
-    );
+    this.vertices.push(x, y, z);
 
-    //this.vertices = this.vertices.concat(v); // push the current generated vertex into the vertices array
+    this.normals.push(x, y, z);
+
+		this.texCoords.push(x/2 + 0.5, z/2 + 0.5);
   }
+
+	createMaterial(texture){
+		this.material = new CGFappearance(this.scene);
+		this.material.setAmbient(0.8,0.8,0.8,1);
+		this.material.setDiffuse(1,1,1,1);
+		this.material.setSpecular(0.4,0.4,0.4,1);
+		this.material.setShininess(120);
+		this.material.loadTexture(texture);
+	}
 };

@@ -13,7 +13,7 @@ class MyCylinder extends CGFobject
       this.myCylinderSide = new MyCylinderSide(this.scene, slices, stacks);
       this.myCircle = new MyCircle(this.scene, slices);
 
-			createMaterials(sideTexture, baseTexture);
+			this.createMaterials(sideTexture, baseTexture);
 
 			this.initBuffers();
 	}
@@ -36,21 +36,19 @@ class MyCylinder extends CGFobject
     this.scene.pushMatrix();
 
 			this.scene.pushMatrix();
-				this.scene.scale(0.5,0.5,0.1);
 
-	      this.scene.pushMatrix();
-	        this.scene.translate(0,0,-0.5);
-	        this.myCylinder.display();
+	      this.scene.pushMatrix(); //Display cylinder side
+					this.materialSide.apply();
+	        this.myCylinderSide.display();
 	      this.scene.popMatrix();
 
-	      this.scene.pushMatrix();
-	        this.scene.rotate(Math.PI,0,1,0);
-	        this.scene.translate(0,0,1);
+	      this.scene.pushMatrix(); //Display Base with null z value
+					this.materialBase.apply();
+	        this.scene.rotate(Math.PI,0,1,0); //rotate so it will be faced properly
 	        this.myCircle.display();
 	      this.scene.popMatrix();
 
-
-				this.clockFaceMaterial.apply();
+				this.scene.translate(0,0,1); //display base with positive z value
 	      this.myCircle.display();
 			this.scene.popMatrix();
 
@@ -58,25 +56,19 @@ class MyCylinder extends CGFobject
 
   }
 
-	createTextures(sideTexture, baseTexture){
-		this.materialSide = new CGFappearance(this);
-		this.materialSide.setAmbient(0.3,0.3,0.3,1);
-		this.materialSide.setDiffuse(0.6,0.6,0.6,1);
-		this.materialSide.setSpecular(0.1,0.1,0.1,1);
+	createMaterials(sideTexture, baseTexture){
+		this.materialSide = new CGFappearance(this.scene);
+		this.materialSide.setAmbient(0.8,0.8,0.8,1);
+		this.materialSide.setDiffuse(1,1,1,1);
+		this.materialSide.setSpecular(0.4,0.4,0.4,1);
 		this.materialSide.setShininess(120);
 		this.materialSide.loadTexture(sideTexture);
 
-		this.materialBase = new CGFappearance(this);
-		this.materialBase.setAmbient(0.3,0.3,0.3,1);
-		this.materialBase.setDiffuse(0.6,0.6,0.6,1);
-		this.materialBase.setSpecular(0.1,0.1,0.1,1);
+		this.materialBase = new CGFappearance(this.scene);
+		this.materialBase.setAmbient(0.8,0.8,0.8,1);
+		this.materialBase.setDiffuse(1,1,1,1);
+		this.materialBase.setSpecular(0.4,0.4,0.4,1);
 		this.materialBase.setShininess(120);
 		this.materialBase.loadTexture(baseTexture);
-	}
-
-	update(dTime){
-		this.secondsHand.subtractAngle(Math.PI*2/(60 * 1000) * dTime);
-		this.minutesHand.subtractAngle(Math.PI*2/(60 * 60 * 1000) * dTime);
-		this.hoursHand.subtractAngle(Math.PI*2/(60 * 60 * 60 * 1000) * dTime);
 	}
 };
