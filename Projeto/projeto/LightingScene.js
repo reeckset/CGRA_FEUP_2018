@@ -6,7 +6,7 @@ var BOARD_HEIGHT = 4.0;
 var BOARD_A_DIVISIONS = 30;
 var BOARD_B_DIVISIONS = 100;
 
-var fps = 10;
+var fps = 60;
 
 class LightingScene extends CGFscene
 {
@@ -108,6 +108,6 @@ class LightingScene extends CGFscene
 	update(currTime){
 		var dTime = currTime - this.lastTime;
 		this.lastTime = currTime;
-
+		this.testCar.update(dTime);
 	}
 };
