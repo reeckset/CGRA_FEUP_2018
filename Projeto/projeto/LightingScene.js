@@ -41,6 +41,8 @@ class LightingScene extends CGFscene
 		this.materialDefault.setDiffuse(1,1,1,1);
 
 		this.testCar = new MyCar(this);
+		this.terrain = new MyTerrain(this, -1);
+		this.trapezoid = new MyTrapezoid(this, Math.PI/4, Math.PI/6);
 	};
 
 	initCameras()
@@ -96,18 +98,23 @@ class LightingScene extends CGFscene
 
 		// ---- BEGIN Scene drawing section
 
-		this.pushMatrix();
+		/*this.pushMatrix();
 		this.testCar.display();
-
 		this.popMatrix();
+
+		this.pushMatrix();
+		this.terrain.display();
+		this.popMatrix();*/
+
+		this.trapezoid.display();
 
 
 		// ---- END Scene drawing section
 	};
 
-	update(currTime){
+	update(currTime, terrain){
 		var dTime = currTime - this.lastTime;
 		this.lastTime = currTime;
-		this.testCar.update(dTime);
+		this.testCar.update(dTime, this.terrain);
 	}
 };

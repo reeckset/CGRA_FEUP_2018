@@ -2,7 +2,7 @@
 /** Represents a plane with nrDivs divisions along both axis, with center at (0,0) */
 class Plane extends CGFobject{
 
-	constructor(scene, nrDivs, minS, maxS, minT, maxT)
+	constructor(scene, nrDivs, minS, maxS, minT, maxT, matrix)
 	{
 		super(scene);
 
@@ -13,7 +13,7 @@ class Plane extends CGFobject{
 		this.patchLength = 1.0 / nrDivs;
 		this.texPatchLengthS = (maxS - minS) / nrDivs;
 		this.texPatchLengthT = (maxT - minT) / nrDivs;
-
+		this.matrix = matrix;
 		this.minS = minS;
 		this.minT = minT;
 
@@ -22,6 +22,26 @@ class Plane extends CGFobject{
 
 	initBuffers()
 	{
+
+		// Generate vertices and normals
+		this.vertices = [];
+		this.normals = [];
+
+		// Uncomment below to init texCoords
+		this.texCoords = [];
+
+		this.generatePlane();
+
+		this.indices = [];
+
+		this.generateIndices();
+
+		this.primitiveType = this.scene.gl.TRIANGLE_STRIP;
+
+		this.initGLBuffers();
+	};
+
+	generatePlane(){
 		/* example for nrDivs = 3 :
 		(numbers represent index of point in vertices array)
 
@@ -38,13 +58,6 @@ class Plane extends CGFobject{
 
 		*/
 
-		// Generate vertices and normals
-		this.vertices = [];
-		this.normals = [];
-
-		// Uncomment below to init texCoords
-		this.texCoords = [];
-
 		var yCoord = 0.5;
 		let tTexCoord = this.minT;
 		for (var j = 0; j <= this.nrDivs; j++)
@@ -53,7 +66,7 @@ class Plane extends CGFobject{
 			let sTexCoord = this.minS;
 			for (var i = 0; i <= this.nrDivs; i++)
 			{
-				this.vertices.push(xCoord, yCoord, 0);
+				this.vertices.push(xCoord, yCoord, this.matrix[j][i] || 0);
 
 				// As this plane is being drawn on the xy plane, the normal to the plane will be along the positive z axis.
 				// So all the vertices will have the same normal, (0, 0, 1).
@@ -69,6 +82,9 @@ class Plane extends CGFobject{
 			tTexCoord -= this.texPatchLengthT;
 			yCoord -= this.patchLength;
 		}
+	}
+
+	generateIndices(){
 
 		// Generating indices
 		/* for nrDivs = 3 output will be
@@ -81,9 +97,7 @@ class Plane extends CGFobject{
 			]
 		Interpreting this index list as a TRIANGLE_STRIP will draw rows of the plane (with degenerate triangles in between. */
 
-		this.indices = [];
 		var ind=0;
-
 
 		for (var j = 0; j < this.nrDivs; j++)
 		{
@@ -102,27 +116,6 @@ class Plane extends CGFobject{
 				this.indices.push(ind);
 			}
 		}
-
-		this.primitiveType = this.scene.gl.TRIANGLE_STRIP;
-
-	/* Alternative with TRIANGLES instead of TRIANGLE_STRIP. More indices, but no degenerate triangles */
-	/*
-		for (var j = 0; j < this.nrDivs; j++)
-		{
-			for (var i = 0; i < this.nrDivs; i++)
-			{
-				this.indices.push(ind, ind+this.nrDivs+1, ind+1);
-				this.indices.push(ind+1, ind+this.nrDivs+1, ind+this.nrDivs+2 );
-
-				ind++;
-			}
-			ind++;
-		}
-
-		this.primitiveType = this.scene.gl.TRIANGLES;
-	*/
-
-		this.initGLBuffers();
-	};
+	}
 
 };
