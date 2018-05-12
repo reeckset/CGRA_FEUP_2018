@@ -89,7 +89,7 @@ class LightingScene extends CGFscene
 		this.updateLights();
 
 		// Draw axis
-		this.axis.display();
+		//this.axis.display();
 
 		this.materialDefault.apply();
 

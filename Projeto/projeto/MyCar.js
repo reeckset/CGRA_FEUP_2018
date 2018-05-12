@@ -12,6 +12,7 @@ class MyCar extends CGFobject
 		this.WIDTH = 2.5;
 		this.WHEELBASE = 2.8;
 		this.LENGTH = this.WHEELBASE + 1.2;
+		this.RIDE_HEIGHT = 0.7;
 		this.HITBOX_X = 6.5;
 		this.HITBOX_Y = 0.5;
 		this.HITBOX_Z = 2.5;
@@ -28,6 +29,13 @@ class MyCar extends CGFobject
 		this.BACK_MIDDLE_TEXTURE = '../resources/images/hummer_back_middle.png';
 		this.TOP_TEXTURE =  '../resources/images/hummer_top.jpg';
 		this.BACK_WINDOW_TEXTURE = '../resources/images/hummer_back_window.jpg';
+		this.HOOD_TEXTURE = '../resources/images/hummer_hood.jpg';
+		this.RADIATOR_TEXTURE = '../resources/images/hummer_front_radiator.jpg';
+		this.UNDERSIDE_TEXTURE = '../resources/images/hummer_underside.jpg';
+		this.FRONT_BUMPER_TEXTURE = '../resources/images/hummer_front_bumper.jpg';
+		this.REAR_BUMPER_TEXTURE = '../resources/images/hummer_rear_bumper.jpg';
+		this.FRONT_WINDOW_TEXTURE = '../resources/images/hummer_front_window.jpg';
+
 
 		this.EMPTY_TEXTURE = '../resources/images/black.png';
 	}
@@ -42,17 +50,20 @@ class MyCar extends CGFobject
 	}
 
 	generateCar(){
-		this.frontWheelRotation = 0;
+		this.frontWheelRotation = Math.PI/4;
 		this.wheelsRotation = 0;
 		this.wheelSpeed = 60;
 		this.topTrapezoid = new MyTrapezoid(this.scene, 13, 35,
-					this.TOP_TEXTURE, this.EMPTY_TEXTURE, this.SIDE_WINDOWS_TEXTURE, this.SIDE_WINDOWS_INVERTED_TEXTURE, this.EMPTY_TEXTURE, this.BACK_WINDOW_TEXTURE);
+					this.TOP_TEXTURE, this.EMPTY_TEXTURE, this.SIDE_WINDOWS_TEXTURE, this.SIDE_WINDOWS_INVERTED_TEXTURE, this.FRONT_WINDOW_TEXTURE, this.BACK_WINDOW_TEXTURE);
 		this.base = new MyUnitCubeQuad(this.scene,
-					this.EMPTY_TEXTURE, this.EMPTY_TEXTURE, this.SIDE_LOWER_TEXTURE, this.SIDE_LOWER_INVERTED_TEXTURE, this.BACK_MIDDLE_TEXTURE, this.EMPTY_TEXTURE);
-		this.sideSkirtLeft = new MyTrapezoid(this.scene, 15, 50,
+					this.HOOD_TEXTURE, this.EMPTY_TEXTURE, this.SIDE_LOWER_TEXTURE, this.SIDE_LOWER_INVERTED_TEXTURE, this.RADIATOR_TEXTURE, this.BACK_MIDDLE_TEXTURE);
+		this.sideSkirtLeft = new MyTrapezoid(this.scene, 22, -30,
 					this.EMPTY_TEXTURE, this.EMPTY_TEXTURE, this.SIDE_SKIRT_TEXTURE, this.EMPTY_TEXTURE, this.EMPTY_TEXTURE, this.EMPTY_TEXTURE);
-		this.sideSkirtRight = new MyTrapezoid(this.scene, 15, 50,
+		this.sideSkirtRight = new MyTrapezoid(this.scene, 22, -30,
 					this.EMPTY_TEXTURE, this.EMPTY_TEXTURE, this.EMPTY_TEXTURE, this.SIDE_SKIRT_INVERTED_TEXTURE, this.EMPTY_TEXTURE, this.EMPTY_TEXTURE);
+		this.bottomTrapezoid = new MyTrapezoid(this.scene, 6, 0,
+					this.UNDERSIDE_TEXTURE, this.EMPTY_TEXTURE, this.EMPTY_TEXTURE, this.EMPTY_TEXTURE, this.REAR_BUMPER_TEXTURE, this.FRONT_BUMPER_TEXTURE);
+		this.axel = new MyCylinder(this.scene, 6, 6, this.EMPTY_TEXTURE, this.EMPTY_TEXTURE);
 		this.generateWheel();
 	}
 
@@ -65,7 +76,10 @@ class MyCar extends CGFobject
 			this.displayWheel(this.WHEELBASE/2,this.WHEEL_RADIUS,this.WIDTH/2,false);
 			this.displayWheel(this.WHEELBASE/2,this.WHEEL_RADIUS,-this.WIDTH/2,true);
 
+			this.displayAxels();
+
 			this.displayTopTrapezoid();
+			this.displayBottomTrapezoid();
 			this.displayBase();
 			this.displaySideSkirts();
 
@@ -87,14 +101,13 @@ class MyCar extends CGFobject
 
 			//Center front wheel and turn it
 			if(isFrontWheel){
-				this.scene.translate(0,0,0.5);
+				this.scene.translate(0,0,1);
 				this.scene.rotate(this.frontWheelRotation, 0, 1, 0);
-				this.scene.translate(0,0,-0.5);
+				this.scene.translate(0,0,-1);
 			}
 
 			//Rotate wheels
 			this.scene.rotate(willFaceZPositive ? this.wheelsRotation : -this.wheelsRotation, 0, 0, 1);
-
 			this.wheel.display();
 		this.scene.popMatrix();
 	}
@@ -182,15 +195,24 @@ class MyCar extends CGFobject
 	displayTopTrapezoid(){
 
 		this.scene.pushMatrix();
-			this.scene.translate((this.LENGTH-3)/2, 1.75, 0);
+			this.scene.translate((this.LENGTH-3)/2, this.RIDE_HEIGHT+0.8, 0);
 			this.scene.scale(3, 0.5, this.WIDTH);
 			this.topTrapezoid.display();
 		this.scene.popMatrix();
 	}
 
+	displayBottomTrapezoid(){
+
+		this.scene.pushMatrix();
+			this.scene.translate(0, this.RIDE_HEIGHT, 0);
+			this.scene.scale(-this.LENGTH, -0.3, this.WIDTH - 2*this.WHEEL_RADIUS - 0.1);
+			this.bottomTrapezoid.display();
+		this.scene.popMatrix();
+	}
+
 	displayBase(){
 		this.scene.pushMatrix();
-			this.scene.translate(0,1.3,0);
+			this.scene.translate(0,this.RIDE_HEIGHT+0.35,0);
 			this.scene.scale(this.LENGTH, 0.4, this.WIDTH);
 			this.base.display();
 		this.scene.popMatrix();
@@ -198,15 +220,29 @@ class MyCar extends CGFobject
 
 	displaySideSkirts(){
 		this.scene.pushMatrix();
-			this.scene.translate(-0.072,0.9,this.WIDTH/2 - 0.05);
-			this.scene.scale(-2.25, -0.4, 0.1);
+			this.scene.translate(-0.072,this.RIDE_HEIGHT,this.WIDTH/2 - 0.05);
+			this.scene.scale(-2.25, -0.3, 0.1);
 			this.sideSkirtLeft.display();
 		this.scene.popMatrix();
 
 		this.scene.pushMatrix();
-			this.scene.translate(-0.072,0.9,-(this.WIDTH/2 - 0.05));
-			this.scene.scale(-2.25, -0.4, 0.1);
+			this.scene.translate(-0.072,this.RIDE_HEIGHT,-(this.WIDTH/2 - 0.05));
+			this.scene.scale(-2.25, -0.3, 0.1);
 			this.sideSkirtRight.display();
+		this.scene.popMatrix();
+	}
+
+	displayAxels(){
+		this.scene.pushMatrix();
+			this.scene.translate(-this.WHEELBASE/2,this.WHEEL_RADIUS,-this.WIDTH/2);
+			this.scene.scale(0.05,0.05,this.WIDTH - 0.2);
+			this.axel.display();
+		this.scene.popMatrix();
+
+		this.scene.pushMatrix();
+			this.scene.translate(this.WHEELBASE/2,this.WHEEL_RADIUS,-this.WIDTH/2);
+			this.scene.scale(0.05,0.05,this.WIDTH - 0.2);
+			this.axel.display();
 		this.scene.popMatrix();
 	}
 
