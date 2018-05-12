@@ -22,7 +22,7 @@ class MyTerrain extends CGFobject
                     [0,0,0,0,0,0,0,0,0,0,0,0],
                     [0,0,0,0,0,0,0,0,0,0,0,0]];
 
-    this.SIZE = 20;
+    this.SIZE = 50;
     this.CELL_SIZE = this.SIZE/this.matrix.length;
   }
 

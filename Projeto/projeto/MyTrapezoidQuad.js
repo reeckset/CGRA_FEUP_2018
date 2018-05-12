@@ -16,7 +16,7 @@ class MyTrapezoidQuad extends CGFobject
 
     this.leftWidth = (alpha == Math.PI / 2) ? 0 : (this.height / Math.tan(alpha));
     this.rightWidth = (beta == Math.PI / 2) ? 0 : (this.height / Math.tan(beta));
-    this.width = 1 + this.leftWidth + this.rightWidth;
+    this.width = 1;
 
 
 		this.initBuffers();
@@ -47,10 +47,10 @@ class MyTrapezoidQuad extends CGFobject
 		];
 
 		this.texCoords = [
-			-this.width/2, 0,
-			-this.width / 2 + this.leftWidth, 1,
-			this.width / 2 - this.rightWidth, 1,
-			this.width/2, 0
+			0, 1,
+			this.leftWidth, 0,
+			1 - this.rightWidth, 0,
+			1, 1
 		];
 
 		this.initGLBuffers();

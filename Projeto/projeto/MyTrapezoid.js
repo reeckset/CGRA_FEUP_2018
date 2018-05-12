@@ -7,20 +7,24 @@
 class MyTrapezoid extends CGFobject
 {
 
-  //alpha is the angle of the left triangle, beta is the corresponding angle on the right
-	constructor(scene, alpha, beta)
+  //steepnessPercentage is the amount of steepness of the sides of the trapezoid
+	//sideShiftPercentage is the shift to either the left or the right (from -100 to 100)
+	constructor(scene, steepnessPercentage, sideShiftPercentage, textureTop, textureBottom, textureFront, textureBack, textureLeft, textureRight)
 	{
 		super(scene);
-    this.alpha = alpha;
-    this.beta = beta;
+		steepnessPercentage = Math.min(Math.max(steepnessPercentage, 0), 100); //Limit steepness
+		sideShiftPercentage = -Math.min(Math.max(sideShiftPercentage, -100), 100); // Limit sideShift
+		let baseAngle = Math.PI/2 - steepnessPercentage * (Math.PI/2 - Math.atan(2)) / 100;
+		let angleShift = sideShiftPercentage * (Math.PI/2 - baseAngle) / 100;
+    this.alpha = baseAngle + angleShift;
+    this.beta = baseAngle - angleShift;
 		this.height = 1;
-
-    this.leftWidth = (alpha == Math.PI / 2) ? 0 : (this.height / Math.tan(alpha));
-    this.rightWidth = (beta == Math.PI / 2) ? 0 : (this.height / Math.tan(beta));
-    this.width = 1 + this.leftWidth + this.rightWidth;
+    this.leftWidth = (this.alpha == Math.PI / 2) ? 0 : (this.height / Math.tan(this.alpha));
+    this.rightWidth = (this.beta == Math.PI / 2) ? 0 : (this.height / Math.tan(this.beta));
+    this.width = 1;
 
 		this.trapezoid = new MyTrapezoidQuad(this.scene, this.alpha, this.beta, 0, 1, 0, 1);
-
+		this.createMaterials(textureTop, textureBottom, textureFront, textureBack, textureLeft, textureRight);
 		this.initBuffers();
 	};
 
@@ -53,21 +57,14 @@ class MyTrapezoid extends CGFobject
 	display(){
 
 		this.scene.pushMatrix();
-/*
-		this.topQuad = new MyQuad(this.scene, 0,1,0,1);
-		this.topQuadRotY = Math.PI/2;
-		this.topQuadRotZ = 0;
-		this.topQuadScaleX = 1;
-		this.topQuadScaleY = 1;
-		this.topQuadX = - this.width / 2 + this.leftWidth + this.height / 2;
-		this.topQuadY = 0.5;
 
-		displayQuad(quad, x, y, rotationZ, rotationY, scaleX, scaleY)
-
-*/
+		this.leftMaterial.apply();
 		this.displayQuad(this.leftQuad, this.leftQuadX, this.leftQuadY, this.leftQuadRotZ, this.leftQuadRotY, this.leftQuadScaleX, this.leftQuadScaleY);
+		this.topMaterial.apply();
 		this.displayQuad(this.topQuad, this.topQuadX, this.topQuadY, this.topQuadRotZ, this.topQuadRotY, this.topQuadScaleX, this.topQuadScaleY);
+		this.bottomMaterial.apply();
 		this.displayQuad(this.bottomQuad, this.bottomQuadX, this.bottomQuadY, this.bottomQuadRotZ, this.bottomQuadRotY, this.bottomQuadScaleX, this.bottomQuadScaleY);
+		this.rightMaterial.apply();
 		this.displayQuad(this.rightQuad, this.rightQuadX, this.rightQuadY, this.rightQuadRotZ, this.rightQuadRotY, this.rightQuadScaleX, this.rightQuadScaleY);
 
 		this.displayTrapezoids();
@@ -78,8 +75,8 @@ class MyTrapezoid extends CGFobject
   generateQuads() {
 
 		this.leftQuad = new MyQuad(this.scene, 0,1,0,1);
-		this.leftQuadRotY = Math.PI/2;
-		this.leftQuadRotZ = this.alpha + Math.PI/2;
+		this.leftQuadRotY = -Math.PI/2;
+		this.leftQuadRotZ = this.alpha - Math.PI/2;
 		this.leftQuadScaleX = 1;
 		this.leftQuadY = 0;
 
@@ -103,8 +100,8 @@ class MyTrapezoid extends CGFobject
 		this.topQuadRotY = Math.PI/2;
 		this.topQuadRotZ = Math.PI/2;
 		this.topQuadScaleX = 1;
-		this.topQuadScaleY = 1;
-		this.topQuadX = - this.width / 2 + this.leftWidth + this.height / 2;
+		this.topQuadScaleY = this.width - this.leftWidth - this.rightWidth;
+		this.topQuadX = - this.width / 2 + this.leftWidth + this.topQuadScaleY/2;
 		this.topQuadY = 0.5;
 
 		//this.generateQuad(1, 1, 0, - this.width / 2 + this.leftWidth + this.height / 2, 0.5, false);
@@ -201,14 +198,45 @@ class MyTrapezoid extends CGFobject
 	displayTrapezoids(){
 		this.scene.pushMatrix();
 		this.scene.translate(0,0,0.5);
+		this.frontMaterial.apply();
 		this.frontTrapezoid.display();
 		this.scene.popMatrix();
 
 		this.scene.pushMatrix();
 		this.scene.translate(0,0,-0.5);
 		this.scene.rotate(Math.PI, 0, 1, 0);
+		this.backMaterial.apply();
 		this.backTrapezoid.display();
 		this.scene.popMatrix();
+	}
+
+	createMaterials(textureTop, textureBottom, textureFront, textureBack, textureLeft, textureRight){
+		this.topMaterial = this.newDefaultMaterial();
+		this.topMaterial.loadTexture(textureTop);
+
+		this.bottomMaterial = this.newDefaultMaterial();
+		this.bottomMaterial.loadTexture(textureBottom);
+
+		this.frontMaterial = this.newDefaultMaterial();
+		this.frontMaterial.loadTexture(textureFront);
+
+		this.backMaterial = this.newDefaultMaterial();
+		this.backMaterial.loadTexture(textureBack);
+
+		this.leftMaterial = this.newDefaultMaterial();
+		this.leftMaterial.loadTexture(textureLeft);
+
+		this.rightMaterial = this.newDefaultMaterial();
+		this.rightMaterial.loadTexture(textureRight);
+	}
+
+	newDefaultMaterial(){
+		let material = new CGFappearance(this.scene);
+		material.setAmbient(0.8,0.8,0.8,1);
+		material.setDiffuse(1,1,1,1);
+		material.setSpecular(0.4,0.4,0.4,1);
+		material.setShininess(120);
+		return material
 	}
 
 };
