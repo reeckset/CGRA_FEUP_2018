@@ -17,6 +17,13 @@ class MyCar extends CGFobject
 		this.HITBOX_Y = 1.1;
 		this.HITBOX_Z = 2.5;
 		this.GRAVITY = 10;
+		this.THRUST = 0.00003;
+		this.MAX_WHEEL_ANGLE = Math.PI/3;
+		this.STEERING_INPUT_SENSITIVITY = 0.01;
+		this.BREAKING_POWER = 0.00008;
+		this.FRICTION = 0.01;
+		this.STEERING_SPRING = 1;
+		this.TURNING_SENSITIVITY = 0.01;
 
 		this.TYRE_TEXTURE =  '../resources/images/tyre.jpg';
 		this.WHEEL_SIDE_TEXTURE =  '../resources/images/wheel_side_2.jpg';
@@ -40,21 +47,21 @@ class MyCar extends CGFobject
 		this.EMPTY_TEXTURE = '../resources/images/black.png';
 	}
 
-	//the four car lights will be inserted in this.scene.lights[startLightId] (and startLightId +1, +2, +3)
-	constructor(scene, startLightId)
+	constructor(scene)
 	{
 			super(scene);
-			car = this;
 			this.createConstants();
 			this.initPositionAndSpeed();
 			this.generateCar();
-			this.generateLights(startLightId);
 	}
 
 	generateCar(){
-		this.frontWheelRotation = Math.PI/4;
+		this.speed = 0;
+		this.carRotation = Math.PI;
+		this.frontWheelAngle = 0;
 		this.wheelsRotation = 0;
 		this.wheelSpeed = 60;
+
 		this.topTrapezoid = new MyTrapezoid(this.scene, 13, 35,
 					this.TOP_TEXTURE, this.EMPTY_TEXTURE, this.SIDE_WINDOWS_TEXTURE, this.SIDE_WINDOWS_INVERTED_TEXTURE, this.FRONT_WINDOW_TEXTURE, this.BACK_WINDOW_TEXTURE);
 		this.base = new MyUnitCubeQuad(this.scene,
@@ -74,6 +81,9 @@ class MyCar extends CGFobject
 	display(){
 		this.scene.pushMatrix();
 		this.scene.translate(this.x, this.y, this.z);
+		this.scene.translate(this.WHEELBASE/2, 0, 0);
+		this.scene.rotate(this.carRotation, 0, 1, 0);
+		this.scene.translate(-this.WHEELBASE/2, 0, 0);
 			//Display wheels (Arguments are X,Y,Z,willFaceZPositive,isFrontWheel)
 			this.displayWheel(-this.WHEELBASE/2,this.WHEEL_RADIUS,this.WIDTH/2,false, true);
 			this.displayWheel(-this.WHEELBASE/2,this.WHEEL_RADIUS,-this.WIDTH/2,true,true);
@@ -106,9 +116,9 @@ class MyCar extends CGFobject
 
 			//Center front wheel and turn it
 			if(isFrontWheel){
-				this.scene.translate(0,0,1);
-				this.scene.rotate(this.frontWheelRotation, 0, 1, 0);
-				this.scene.translate(0,0,-1);
+				this.scene.translate(0,0,0.5);
+				this.scene.rotate(this.frontWheelAngle, 0, 1, 0);
+				this.scene.translate(0,0,-0.5);
 			}
 
 			//Rotate wheels
@@ -121,6 +131,13 @@ class MyCar extends CGFobject
 		//put dTime in seconds
 		dTime /= 1000;
 		this.wheelsRotation += dTime * 2*Math.PI * this.wheelSpeed;
+		if(this.speed != 0) this.speed -= this.FRICTION*this.speed/Math.abs(this.speed)*dTime;
+		if(Math.abs(this.frontWheelAngle) >= 0.1) this.frontWheelAngle -= this.STEERING_SPRING*this.frontWheelAngle/Math.abs(this.frontWheelAngle)*dTime*Math.abs(this.speed);
+
+		this.carRotation += this.speed*this.frontWheelAngle*this.TURNING_SENSITIVITY;
+
+		this.vx = -this.speed*Math.cos(this.carRotation);
+		this.vz = this.speed*Math.sin(this.carRotation);
 
 		this.x += this.vx * dTime;
 		this.y += this.vy * dTime;
@@ -128,20 +145,9 @@ class MyCar extends CGFobject
 
 		if(!this.isGroundedOnTerrain(terrain)){
 			this.vy -= this.GRAVITY * dTime;
-		}else{
-			this.vy = 0;
 		}
 
-		this.updateLights();
-
-		if(this.isCollidingWithTerrain(terrain)){
-			this.vx = 0;
-			this.vz = 0;
-			console.log("Collided");
-		}
-
-		this.carSpeed = Math.sqrt(this.vx*this.vx+this.vz*this.vz);
-		this.wheelSpeed = this.carSpeed/(2*Math.PI*this.WHEEL_RADIUS);
+		this.wheelSpeed = this.speed/(2*Math.PI*this.WHEEL_RADIUS);
 
 	}
 
@@ -154,42 +160,13 @@ class MyCar extends CGFobject
 		this.vz = 0;
 	}
 
-	isCollidingWithTerrain(terrain){
-		for(var z = 0; z < terrain.matrix.length; z++){
-			for(var x = 0; x < terrain.matrix.length; x++){ //CHECK IF THERE IS A POINT OF THE TERRAIN WITHING THE HITBOX
-				let realX = x*terrain.CELL_SIZE-terrain.SIZE/2;
-				let realZ = z*terrain.CELL_SIZE-terrain.SIZE/2;
-
-				if(terrain.matrix[z][x] > this.y + this.HITBOX_Y){
-					if(realX < this.x + this.HITBOX_X/2 && realX > this.x){
-						this.x = realX - this.HITBOX_X/2;
-						return true;
-					}
-					if(realX < this.x && realX > this.x - this.HITBOX_X/2){
-						this.x = realX + this.HITBOX_X/2;
-						return true;
-					}
-					if(realZ < this.z + this.HITBOX_Z/2 && realZ > this.z){
-						this.z = realZ - this.HITBOX_Z/2;
-						return true;
-					}
-					if(realZ < this.z && realZ > this.z - this.HITBOX_Z/2){
-						this.z = realZ + this.HITBOX_Z/2;
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
-
 	isGroundedOnTerrain(terrain){
 		for(var z = 0; z < terrain.matrix.length; z++){
 			for(var x = 0; x < terrain.matrix.length; x++){
 				let realX = x*terrain.CELL_SIZE-terrain.SIZE/2;
 				let realZ = z*terrain.CELL_SIZE-terrain.SIZE/2;
-				if((realX < this.x + this.HITBOX_X/4 && realX > this.x - this.HITBOX_X/4)
-					&& (realZ < this.z + this.HITBOX_Z/4 && realZ > this.z - this.HITBOX_Z/4)
+				if((realX < this.x + this.HITBOX_X && realX > this.x - this.HITBOX_X)
+					&& (realZ < this.z + this.HITBOX_Z && realZ > this.z - this.HITBOX_Z)
 					&& (terrain.matrix[z][x] > this.y)){
 						this.y = terrain.matrix[z][x]; //will place the car on top of the terrain
 						return true;
@@ -211,8 +188,8 @@ class MyCar extends CGFobject
 	displayBottomTrapezoid(){
 
 		this.scene.pushMatrix();
-			this.scene.translate(0, this.RIDE_HEIGHT, 0);
-			this.scene.scale(-this.LENGTH, -0.3, this.WIDTH - 2*this.WHEEL_RADIUS - 0.1);
+			this.scene.translate(0, this.RIDE_HEIGHT-0.05, 0);
+			this.scene.scale(-this.LENGTH, -0.4, this.WIDTH - 2*this.WHEEL_RADIUS - 0.1);
 			this.bottomTrapezoid.display();
 		this.scene.popMatrix();
 	}
@@ -280,58 +257,28 @@ class MyCar extends CGFobject
 		this.headLightMaterial.loadTexture(this.HEADLIGHT_TEXTURE);
 	}
 
-	generateLights(startLightId){
-		for(let i = startLightId; i<startLightId+4; i++){
-			this.setLight(i);
+	accelerate(amount){
+		if(amount*this.speed < 0){
+			this.speed+=amount*this.BREAKING_POWER;
+		}else{
+			this.speed+=amount*this.THRUST;
 		}
-		this.scene.lights[startLightId+2].setDiffuse(7, 2, 2, 1);
-		this.scene.lights[startLightId+3].setDiffuse(7, 2, 2, 1);
-		this.scene.lights[startLightId+2].setQuadraticAttenuation(0.2);
-		this.scene.lights[startLightId+3].setQuadraticAttenuation(0.2);
-
-		this.startLightId = startLightId;
 	}
 
-	setLight(id){
-		console.log("generating light " + id);
-		this.scene.lights[id].setVisible(true); // show marker on light position (different from enabled
-		this.scene.lights[id].setAmbient(0,0,0,0);
-		this.scene.lights[id].setDiffuse(10, 10, 10, 1);
-		this.scene.lights[id].setSpecular(0,0,0,0);
-		this.scene.lights[id].setQuadraticAttenuation(0.05);
-		this.scene.lights[id].setLinearAttenuation(0.01);
-		this.scene.lights[id].setConstantAttenuation(0);
-
-		this.scene.lights[id].setSpotCutOff(45);
-		this.scene.lights[id].setSpotExponent(100);
-		this.scene.lights[id].enable();
+	updateWheelAngle(amount){
+		this.frontWheelAngle=Math.max(Math.min(this.frontWheelAngle+amount*this.STEERING_INPUT_SENSITIVITY, this.MAX_WHEEL_ANGLE), -this.MAX_WHEEL_ANGLE);
 	}
 
-	updateLights(){
-		this.scene.lights[this.startLightId].setPosition(this.x - this.LENGTH/2, this.y + this.HITBOX_Y, this.z - 0.75, 1);
-		this.scene.lights[this.startLightId].setSpotDirection(-1, 0, 0);
-		this.scene.lights[this.startLightId+1].setPosition(this.x - this.LENGTH/2, this.y + this.HITBOX_Y, this.z + 0.75, 1);
-		this.scene.lights[this.startLightId+1].setSpotDirection(-1, 0, 0);
-
-		this.scene.lights[this.startLightId+2].setPosition(this.x + this.LENGTH/2, this.y + this.HITBOX_Y, this.z - 0.75, 1);
-		this.scene.lights[this.startLightId+2].setSpotDirection(1, 0, 0);
-		this.scene.lights[this.startLightId+3].setPosition(this.x + this.LENGTH/2, this.y + this.HITBOX_Y, this.z + 0.75, 1);
-		this.scene.lights[this.startLightId+3].setSpotDirection(1, 0, 0)
-
+	//TODO DELETE THIS,
+	liftCar(){
+		this.y = 10;
 	}
 
+	thrustForward(){
+		this.vx = -1;
+	}
+
+	setPos(){
+		this.x = 5;
+	}
 };
-
-//TODO DELETE THIS
-var car;
-function liftCar(){
-	car.y = 10;
-}
-
-function thrustForward(){
-	car.vx = -1;
-}
-
-function setPos(){
-	car.x = 5;
-}
