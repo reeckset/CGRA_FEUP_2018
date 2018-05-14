@@ -28,7 +28,7 @@ class LightingScene extends CGFscene
 		this.updatePeriod = 1000/fps;
 		this.lastTime = 0;
 
-		this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
+		this.gl.clearColor(0.0, 0.56, 0.8, 1.0);
 		this.gl.clearDepth(100.0);
 		this.gl.enable(this.gl.DEPTH_TEST);
 		this.gl.enable(this.gl.CULL_FACE);
@@ -36,11 +36,14 @@ class LightingScene extends CGFscene
 
 		this.axis = new CGFaxis(this);
 
+		//Interface
+		this.option1=true; this.option2=false; this.speed=3;
+
 		//Creating the default material for the scene
 		this.materialDefault = new CGFappearance(this);
 		this.materialDefault.setDiffuse(1,1,1,1);
 
-		this.testCar = new MyCar(this);
+		this.car = new MyCar(this, 1);
 		this.terrain = new MyTerrain(this, -1);
 	};
 
@@ -51,16 +54,17 @@ class LightingScene extends CGFscene
 
 	initLights()
 	{
-		this.setGlobalAmbientLight(0,0,0, 1.0);
-
-		// Positions for four lights
-		this.lights[0].setPosition(0, 4, 0, 1);
+		this.setGlobalAmbientLight(0.4,0.4,0.4, 1.0);
+/*
 		this.lights[0].setVisible(true); // show marker on light position (different from enabled
-
-		this.lights[0].setAmbient(1, 1, 1, 1);
-		this.lights[0].setDiffuse(1, 1, 1, 1.0);
+		this.lights[0].setPosition(0,5,0,1);
+			this.lights[0].setAmbient(0,0,0,1);
+		this.lights[0].setDiffuse(1, 1, 1, 10.0);
 		this.lights[0].setSpecular(1,1,1,1);
-		this.lights[0].enable();
+		this.lights[0].setQuadraticAttenuation(0);
+		this.lights[0].setLinearAttenuation(0);
+		this.lights[0].setConstantAttenuation(0);
+		this.lights[0].enable();*/
 	};
 
 	updateLights()
@@ -98,7 +102,7 @@ class LightingScene extends CGFscene
 		// ---- BEGIN Scene drawing section
 
 		this.pushMatrix();
-		this.testCar.display();
+		this.car.display();
 		this.popMatrix();
 
 		this.pushMatrix();
@@ -112,6 +116,7 @@ class LightingScene extends CGFscene
 	update(currTime, terrain){
 		var dTime = currTime - this.lastTime;
 		this.lastTime = currTime;
-		this.testCar.update(dTime, this.terrain);
+
+		this.car.update(dTime, this.terrain);
 	}
 };

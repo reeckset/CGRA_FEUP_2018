@@ -14,7 +14,7 @@ class MyCar extends CGFobject
 		this.LENGTH = this.WHEELBASE + 1.2;
 		this.RIDE_HEIGHT = 0.7;
 		this.HITBOX_X = 6.5;
-		this.HITBOX_Y = 0.5;
+		this.HITBOX_Y = 1.1;
 		this.HITBOX_Z = 2.5;
 		this.GRAVITY = 10;
 
@@ -40,13 +40,15 @@ class MyCar extends CGFobject
 		this.EMPTY_TEXTURE = '../resources/images/black.png';
 	}
 
-	constructor(scene)
+	//the four car lights will be inserted in this.scene.lights[startLightId] (and startLightId +1, +2, +3)
+	constructor(scene, startLightId)
 	{
 			super(scene);
 			car = this;
 			this.createConstants();
 			this.initPositionAndSpeed();
 			this.generateCar();
+			this.generateLights(startLightId);
 	}
 
 	generateCar(){
@@ -129,6 +131,8 @@ class MyCar extends CGFobject
 		}else{
 			this.vy = 0;
 		}
+
+		this.updateLights();
 
 		if(this.isCollidingWithTerrain(terrain)){
 			this.vx = 0;
@@ -276,6 +280,45 @@ class MyCar extends CGFobject
 		this.headLightMaterial.loadTexture(this.HEADLIGHT_TEXTURE);
 	}
 
+	generateLights(startLightId){
+		for(let i = startLightId; i<startLightId+4; i++){
+			this.setLight(i);
+		}
+		this.scene.lights[startLightId+2].setDiffuse(7, 2, 2, 1);
+		this.scene.lights[startLightId+3].setDiffuse(7, 2, 2, 1);
+		this.scene.lights[startLightId+2].setQuadraticAttenuation(0.2);
+		this.scene.lights[startLightId+3].setQuadraticAttenuation(0.2);
+
+		this.startLightId = startLightId;
+	}
+
+	setLight(id){
+		console.log("generating light " + id);
+		this.scene.lights[id].setVisible(true); // show marker on light position (different from enabled
+		this.scene.lights[id].setAmbient(0,0,0,0);
+		this.scene.lights[id].setDiffuse(10, 10, 10, 1);
+		this.scene.lights[id].setSpecular(0,0,0,0);
+		this.scene.lights[id].setQuadraticAttenuation(0.05);
+		this.scene.lights[id].setLinearAttenuation(0.01);
+		this.scene.lights[id].setConstantAttenuation(0);
+
+		this.scene.lights[id].setSpotCutOff(45);
+		this.scene.lights[id].setSpotExponent(100);
+		this.scene.lights[id].enable();
+	}
+
+	updateLights(){
+		this.scene.lights[this.startLightId].setPosition(this.x - this.LENGTH/2, this.y + this.HITBOX_Y, this.z - 0.75, 1);
+		this.scene.lights[this.startLightId].setSpotDirection(-1, 0, 0);
+		this.scene.lights[this.startLightId+1].setPosition(this.x - this.LENGTH/2, this.y + this.HITBOX_Y, this.z + 0.75, 1);
+		this.scene.lights[this.startLightId+1].setSpotDirection(-1, 0, 0);
+
+		this.scene.lights[this.startLightId+2].setPosition(this.x + this.LENGTH/2, this.y + this.HITBOX_Y, this.z - 0.75, 1);
+		this.scene.lights[this.startLightId+2].setSpotDirection(1, 0, 0);
+		this.scene.lights[this.startLightId+3].setPosition(this.x + this.LENGTH/2, this.y + this.HITBOX_Y, this.z + 0.75, 1);
+		this.scene.lights[this.startLightId+3].setSpotDirection(1, 0, 0)
+
+	}
 
 };
 
