@@ -8,23 +8,37 @@ class MyCar extends CGFobject
 {
 
 	createConstants(){
-		this.WHEEL_RADIUS = 0.4;
-		this.WIDTH = 2.5;
-		this.WHEELBASE = 2.8;
-		this.LENGTH = this.WHEELBASE + 1.2;
+		this.WHEEL_RADIUS = 0.4; //Radius of the car's wheels
+		this.WIDTH = 2.5; //Width of the car
+		this.WHEELBASE = 2.8; //Wheelbase of the car
+		this.LENGTH = this.WHEELBASE + 1.2; //Length of the car
 		this.RIDE_HEIGHT = 0.7;
 		this.HITBOX_X = 6.5;
-		this.HITBOX_Y = 1.1;
+		this.HITBOX_Y = 1.1; //Determines the car's Y coordinate where front/side collisions will be detected
 		this.HITBOX_Z = 2.5;
 		this.GRAVITY = 10;
-		this.THRUST = 0.00003;
-		this.MAX_WHEEL_ANGLE = Math.PI/3;
-		this.STEERING_INPUT_SENSITIVITY = 0.01;
-		this.BREAKING_POWER = 0.00008;
-		this.FRICTION = 0.01;
-		this.STEERING_SPRING = 1;
-		this.TURNING_SENSITIVITY = 0.01;
+		this.THRUST = 0.00003; //How fast the car accelerates
+		this.MAX_WHEEL_ANGLE = Math.PI/3; //How far the front wheels can steer
+		this.STEERING_INPUT_SENSITIVITY = 0.01; //How much an "A" or "D" keys input steers the front wheels
+		this.BREAKING_POWER = 0.00008; //Stregth of the car's breaking (usually faster than this.THRUST)
+		this.FRICTION = 1; //How much friction there is to stop the car
+		this.STEERING_SPRING = 1; //Determines how fast the front wheels fall back in place proportionally to the car's speed
+		this.TURNING_SENSITIVITY = 0.01; //Determines how much the car turns
+		this.MAX_SPEED = 20; //Maximum speed for the car
+		this.TURNING_OVER_SPEED = 0.3; //Determines how much the wheel can turn proportionally to the car's speed
 
+		this.loadTextures();
+	}
+
+	constructor(scene)
+	{
+			super(scene);
+			this.createConstants();
+			this.initPositionAndSpeed();
+			this.generateCar();
+	}
+
+	loadTextures(){
 		this.TYRE_TEXTURE =  '../resources/images/tyre.jpg';
 		this.WHEEL_SIDE_TEXTURE =  '../resources/images/wheel_side_2.jpg';
 		this.SIDE_WINDOWS_TEXTURE = '../resources/images/hummer_side_windows.png';
@@ -47,20 +61,13 @@ class MyCar extends CGFobject
 		this.EMPTY_TEXTURE = '../resources/images/black.png';
 	}
 
-	constructor(scene)
-	{
-			super(scene);
-			this.createConstants();
-			this.initPositionAndSpeed();
-			this.generateCar();
-	}
-
 	generateCar(){
 		this.speed = 0;
 		this.carRotation = Math.PI;
 		this.frontWheelAngle = 0;
 		this.wheelsRotation = 0;
 		this.wheelSpeed = 60;
+		this.isTurningWheels = false;
 
 		this.topTrapezoid = new MyTrapezoid(this.scene, 13, 35,
 					this.TOP_TEXTURE, this.EMPTY_TEXTURE, this.SIDE_WINDOWS_TEXTURE, this.SIDE_WINDOWS_INVERTED_TEXTURE, this.FRONT_WINDOW_TEXTURE, this.BACK_WINDOW_TEXTURE);
@@ -130,9 +137,21 @@ class MyCar extends CGFobject
 	update(dTime, terrain){
 		//put dTime in seconds
 		dTime /= 1000;
+
+		if(this.speed > this.MAX_SPEED) this.speed = this.MAX_SPEED;
+
 		this.wheelsRotation += dTime * 2*Math.PI * this.wheelSpeed;
-		if(this.speed != 0) this.speed -= this.FRICTION*this.speed/Math.abs(this.speed)*dTime;
-		if(Math.abs(this.frontWheelAngle) >= 0.1) this.frontWheelAngle -= this.STEERING_SPRING*this.frontWheelAngle/Math.abs(this.frontWheelAngle)*dTime*Math.abs(this.speed);
+		if(Math.abs(this.speed) >= 0.1) this.speed -= this.FRICTION*(this.speed/Math.abs(this.speed))*dTime;
+		else this.speed = 0;
+
+		if(!this.isTurningWheels){
+		 	if(Math.abs(this.frontWheelAngle) >= 0.1){
+				let newFrontWheelAngle = this.frontWheelAngle - this.STEERING_SPRING*this.frontWheelAngle/Math.abs(this.frontWheelAngle)*dTime*Math.abs(this.speed);
+				if(this.frontWheelAngle *newFrontWheelAngle <= 0) this.frontWheelAngle = 0;
+				else this.frontWheelAngle = newFrontWheelAngle;
+			}
+			else this.frontWheelAngle = 0;
+		}
 
 		this.carRotation += this.speed*this.frontWheelAngle*this.TURNING_SENSITIVITY;
 
@@ -161,17 +180,25 @@ class MyCar extends CGFobject
 	}
 
 	isGroundedOnTerrain(terrain){
+		var distanceToCurrentPosition = Infinity;
+		var nextY;
+		var nextX;
 		for(var z = 0; z < terrain.matrix.length; z++){
 			for(var x = 0; x < terrain.matrix.length; x++){
 				let realX = x*terrain.CELL_SIZE-terrain.SIZE/2;
 				let realZ = z*terrain.CELL_SIZE-terrain.SIZE/2;
-				if((realX < this.x + this.HITBOX_X && realX > this.x - this.HITBOX_X)
-					&& (realZ < this.z + this.HITBOX_Z && realZ > this.z - this.HITBOX_Z)
-					&& (terrain.matrix[z][x] > this.y)){
-						this.y = terrain.matrix[z][x]; //will place the car on top of the terrain
-						return true;
-					}
+				let currDistance = ((realX-this.x)*(realX-this.x)+(realZ*this.z)*(realZ*this.z));
+				if(currDistance < distanceToCurrentPosition){
+					distanceToCurrentPosition = currDistance;
+					nextY = terrain.matrix[z][x];
+					nextX = realX;
+				}
 			}
+		}
+		if(nextY > this.y){
+			console.log("nextY: " + nextY);
+			this.y = nextY;
+			return true;
 		}
 		return false;
 	}
@@ -266,7 +293,16 @@ class MyCar extends CGFobject
 	}
 
 	updateWheelAngle(amount){
-		this.frontWheelAngle=Math.max(Math.min(this.frontWheelAngle+amount*this.STEERING_INPUT_SENSITIVITY, this.MAX_WHEEL_ANGLE), -this.MAX_WHEEL_ANGLE);
+		this.isTurningWheels = true;
+		this.frontWheelAngle=Math.max(Math.min(this.frontWheelAngle+amount*this.STEERING_INPUT_SENSITIVITY, this.getMaxWheelAngle()), -this.getMaxWheelAngle());
+	}
+
+	stopTurningWheels(){
+		this.isTurningWheels = false;
+	}
+
+	getMaxWheelAngle(){
+		return Math.max(Math.min(this.MAX_WHEEL_ANGLE / (this.TURNING_OVER_SPEED*Math.abs(this.speed)) || this.MAX_WHEEL_ANGLE, this.MAX_WHEEL_ANGLE), 0);
 	}
 
 	//TODO DELETE THIS,

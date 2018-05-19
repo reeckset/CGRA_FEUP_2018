@@ -146,15 +146,15 @@ class LightingScene extends CGFscene
 
 		if(this.gui.isKeyPressed("KeyW")){
 			this.car.accelerate(dTime*this.horsepower);
-		}
-		if(this.gui.isKeyPressed("KeyS")){
+		}else if(this.gui.isKeyPressed("KeyS")){
 			this.car.accelerate(-dTime*this.horsepower);
 		}
 		if(this.gui.isKeyPressed("KeyA")){
 			this.car.updateWheelAngle(dTime);
-		}
-		if(this.gui.isKeyPressed("KeyD")){
+		}else if(this.gui.isKeyPressed("KeyD")){
 			this.car.updateWheelAngle(-dTime);
+		}else{
+			this.car.stopTurningWheels();
 		}
 		this.car.update(dTime, this.terrain);
 	}
