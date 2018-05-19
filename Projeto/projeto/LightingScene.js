@@ -49,12 +49,13 @@ class LightingScene extends CGFscene
 		this.materialDefault.setDiffuse(1,1,1,1);
 
 		this.car = new MyCar(this);
-		this.terrain = new MyTerrain(this, -1);
+		this.terrain = new MyTerrain(this, 0);
+		this.crane = new MyCrane(this);
 	};
 
 	initCameras()
 	{
-		this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(30, 30, 30), vec3.fromValues(0, 0, 0));
+		this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(0, 20, 0), vec3.fromValues(20, 0, 20));
 	};
 
 	initLights()
@@ -136,11 +137,16 @@ class LightingScene extends CGFscene
 		this.terrain.display();
 		this.popMatrix();
 
+		this.pushMatrix();
+		this.translate(20, 0, 20);
+		this.crane.display();
+		this.popMatrix();
+
 
 		// ---- END Scene drawing section
 	};
 
-	update(currTime, terrain){
+	update(currTime){
 		var dTime = currTime - this.lastTime;
 		this.lastTime = currTime;
 

@@ -196,7 +196,6 @@ class MyCar extends CGFobject
 			}
 		}
 		if(nextY > this.y){
-			console.log("nextY: " + nextY);
 			this.y = nextY;
 			return true;
 		}
