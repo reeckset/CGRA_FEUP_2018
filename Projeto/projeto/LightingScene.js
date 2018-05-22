@@ -43,6 +43,7 @@ class LightingScene extends CGFscene
 		this.enable_light_1=true;
 		this.enable_light_2=true;
 		this.horsepower = 150;
+		this.drift_mode = false;
 
 		//Creating the default material for the scene
 		this.materialDefault = new CGFappearance(this);
@@ -51,6 +52,7 @@ class LightingScene extends CGFscene
 		this.car = new MyCar(this);
 		this.terrain = new MyTerrain(this, 0,1,0,1,0);
 		this.crane = new MyCrane(this);
+		this.water = new Plane(this, 8, 0,1,0,1);
 	};
 
 	initCameras()
@@ -142,6 +144,12 @@ class LightingScene extends CGFscene
 		this.crane.display();
 		this.popMatrix();
 
+		this.pushMatrix();
+		this.scale(5,1,5);
+		this.translate(-5, -0.1, -5);
+		this.water.display();
+		this.popMatrix();
+
 
 		// ---- END Scene drawing section
 	};
@@ -163,6 +171,8 @@ class LightingScene extends CGFscene
 			this.car.stopTurningWheels();
 		}
 		this.car.update(dTime, this.terrain);
+
+		this.car.DRIFT_MODE = this.drift_mode;
 	}
 
 	liftCar(){

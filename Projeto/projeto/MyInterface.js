@@ -29,6 +29,7 @@ class MyInterface extends CGFinterface {
 		// e.g. LightingScene.prototype.doSomething = function () { console.log("Doing something..."); };
 
 		this.gui.add(this.scene, 'liftCar');
+    this.gui.add(this.scene, 'drift_mode');
 
 		// add a group of controls (and open/expand by defult)
 

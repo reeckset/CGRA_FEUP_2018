@@ -26,7 +26,7 @@ class MyCar extends CGFobject
 		this.TURNING_SENSITIVITY = 0.01; //Determines how much the car turns
 		this.MAX_SPEED = 20; //Maximum speed for the car
 		this.TURNING_OVER_SPEED = 0.2; //Determines how much the wheel can turn proportionally to the car's speed
-		this.DRIFT_MODE = false;
+		this.DRIFT_MODE = true;
 		this.loadTextures();
 	}
 
@@ -91,10 +91,10 @@ class MyCar extends CGFobject
 		this.scene.pushMatrix();
 		this.scene.translate(this.x - this.WHEELBASE, this.y, this.z);
 		if(!this.DRIFT_MODE) this.scene.translate(this.WHEELBASE/2, 0, 0);
-		else this.scene.translate(-this.speed / 8, 0, 0);
+		else this.scene.translate(-this.speed / 4, 0, 0);
 		this.scene.rotate(this.carRotation, 0, 1, 0);
 		if(!this.DRIFT_MODE) this.scene.translate(-this.WHEELBASE/2, 0, 0);
-		else this.scene.translate(this.speed / 8, 0, 0);
+		else this.scene.translate(this.speed / 4, 0, 0);
 
 		this.scene.rotate(this.xAngle, 1, 0, 0);
 		this.scene.rotate(this.zAngle, 0, 0, 1);
