@@ -4,7 +4,9 @@
  * @constructor
  */
 
-class MyTerrain extends CGFobject
+
+
+class MyTerrain extends Plane
 {
   createConstants(){
     this.TEXTURE = '../resources/images/terrain.jpg';
@@ -12,32 +14,85 @@ class MyTerrain extends CGFobject
     this.matrix = [ [ 2.0 , 3.0 , 2.0, 4.0, 7.5, 6.4, 4.3, 1.3 ],
                     [ 0.0 , 0.0 , 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
                     [ 0.0 , 0.0 , 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
-                    [ 0.0 , 0.0 , 2.0, 5.0, 2.5, 2.4, 0.0, 0.0 ],
+                    [ 0.0 , 0.0 , 2.0, 4.0, 2.5, 2.4, 0.0, 0.0 ],
                     [ 0.0 , 0.0 , 2.0, 4.0, 3.5, 2.4, 0.0, 0.0 ],
                     [ 0.0 , 0.0 , 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
                     [ 0.0 , 0.0 , 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
                     [ 2.0 , 3.0 , 2.0, 1.0, 2.5, 2.4, 2.3, 1.3 ]
-                    ];
+                  ];
 
     this.SIZE = 50;
     this.CELL_SIZE = this.SIZE/this.matrix.length;
   }
 
-	constructor(scene, y)
+	constructor(scene, minS, maxS, minT, maxT, y)
 	{
-		super(scene);
+    super(scene, 7, minS, maxS, minT, maxT);
     this.createConstants();
     this.addY(y);
-    this.plane = new Plane(this.scene, this.matrix.length - 1,0,1,0,1,this.matrix);
+
     this.createMaterial();
+    this.initBuffers();
   };
+
+  initBuffers()
+	{
+    if(!this.matrix) return;
+    super.initBuffers();
+
+		this.generatePlane();
+
+	};
+
+	generatePlane(){
+		/* example for nrDivs = 3 :
+		(numbers represent index of point in vertices array)
+
+				y
+				^
+				|
+		0    1  |  2    3
+				|
+		4	 5	|  6    7
+		--------|--------------> x
+		8    9  |  10  11
+				|
+		12  13  |  14  15
+
+		*/
+
+		var yCoord = 0.5;
+		let tTexCoord = this.minT;
+		for (var j = 0; j <= this.nrDivs; j++)
+		{
+			var xCoord = -0.5;
+			let sTexCoord = this.minS;
+			for (var i = 0; i <= this.nrDivs; i++)
+			{
+				this.vertices.push(xCoord, yCoord, this.matrix[j][i]);
+
+				// As this plane is being drawn on the xy plane, the normal to the plane will be along the positive z axis.
+				// So all the vertices will have the same normal, (0, 0, 1).
+
+				this.normals.push(0,0,1);
+
+				// texCoords should be computed here; uncomment and fill the blanks
+				this.texCoords.push(sTexCoord, -tTexCoord);
+
+				xCoord += this.patchLength;
+				sTexCoord += this.texPatchLengthS;
+			}
+			tTexCoord -= this.texPatchLengthT;
+			yCoord -= this.patchLength;
+		}
+	}
 
 	display(){
 		this.scene.pushMatrix();
     this.material.apply();
     this.scene.scale(this.SIZE, 1, this.SIZE);
     this.scene.rotate(Math.PI/2, -1,0,0);
-    this.plane.display();
+    super.display();
 		this.scene.popMatrix();
 	}
 

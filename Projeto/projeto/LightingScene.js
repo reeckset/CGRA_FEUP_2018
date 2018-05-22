@@ -49,7 +49,7 @@ class LightingScene extends CGFscene
 		this.materialDefault.setDiffuse(1,1,1,1);
 
 		this.car = new MyCar(this);
-		this.terrain = new MyTerrain(this, 0);
+		this.terrain = new MyTerrain(this, 0,1,0,1,0);
 		this.crane = new MyCrane(this);
 	};
 
