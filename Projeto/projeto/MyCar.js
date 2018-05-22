@@ -68,6 +68,8 @@ class MyCar extends CGFobject
 		this.wheelsRotation = 0;
 		this.wheelSpeed = 60;
 		this.isTurningWheels = false;
+		this.xAngle = 0;
+		this.zAngle = 0;
 
 		this.topTrapezoid = new MyTrapezoid(this.scene, 13, 35,
 					this.TOP_TEXTURE, this.EMPTY_TEXTURE, this.SIDE_WINDOWS_TEXTURE, this.SIDE_WINDOWS_INVERTED_TEXTURE, this.FRONT_WINDOW_TEXTURE, this.BACK_WINDOW_TEXTURE);
@@ -93,6 +95,10 @@ class MyCar extends CGFobject
 		this.scene.rotate(this.carRotation, 0, 1, 0);
 		if(!this.DRIFT_MODE) this.scene.translate(-this.WHEELBASE/2, 0, 0);
 		else this.scene.translate(this.speed / 8, 0, 0);
+
+		this.scene.rotate(this.xAngle, 1, 0, 0);
+		this.scene.rotate(this.zAngle, 0, 0, 1);
+
 			//Display wheels (Arguments are X,Y,Z,willFaceZPositive,isFrontWheel)
 			this.displayWheel(-this.WHEELBASE/2,this.WHEEL_RADIUS,this.WIDTH/2,false, true);
 			this.displayWheel(-this.WHEELBASE/2,this.WHEEL_RADIUS,-this.WIDTH/2,true,true);
@@ -168,7 +174,7 @@ class MyCar extends CGFobject
 			this.vy -= this.GRAVITY * dTime;
 		}*/
 		//this.y = 0;
-		this.y = this.getTerrainHeightInCoords(terrain, this.getRealX(), this.getRealZ());
+		this.handleTerrainCollision(terrain);
 
 		this.wheelSpeed = this.speed/(2*Math.PI*this.WHEEL_RADIUS);
 	}
@@ -324,26 +330,67 @@ class MyCar extends CGFobject
 		let heightXhZl = terrain.matrix[matrixZlower][matrixXhigher];
 		let heightXhZh = terrain.matrix[matrixZhigher][matrixXhigher];
 
-		if(matrixZPercent + matrixXPercent <  1){
-			console.log("Triangle 1");
-			console.log("Points Height: 1:" + heightXlZl + ", 2: " + heightXlZh + ", 3: " + heightXhZl);
+		if(matrixZPercent + matrixXPercent <  1){ //TRIANGLE FACED TO NEGATIVE X AND Z
 			var vector1 = [0, heightXlZh - heightXlZl, 1];
 			var vector2 = [1, heightXhZl - heightXlZl, 0];
 			var normal = this.cross(vector1, vector2);
-			console.log(vector1 + " ; " + vector2);
 			let d = - (normal[0]*1 + normal[1]*heightXhZl);
 			var getPlaneY = function(x,z){ return - (normal[0]*x + normal[2]*z + d)/normal[1]};
 			return getPlaneY(matrixXPercent, matrixZPercent);
-		}else{
-			console.log("Triangle 2");
+		}else{ //TRIANGLE FACED TO POSITIVE X AND Z
 			var vector1 = [0, heightXhZh - heightXhZl, 1];
 			var vector2 = [1, heightXhZh - heightXlZh, 0];
 			var normal = this.cross(vector1, vector2);
-			console.log(vector1 + " - " + vector2);
 			let d = - (normal[0]*1 + normal[1]*heightXhZl + normal[2]*0);
 			var getPlaneY = function(x,z){ return - (normal[0]*x + normal[2]*z + d)/normal[1]};
 			return getPlaneY(matrixXPercent, matrixZPercent);
 		}
+	}
+
+	handleTerrainCollision(terrain){
+		this.y = this.getTerrainHeightInCoords(terrain, this.getRealX(), this.getRealZ());
+		this.calcZAngle(terrain);
+		this.calcXAngle(terrain);
+	}
+
+	calcXAngle(terrain){
+			let vector1 = [Math.cos(this.carRotation) * (this.WHEELBASE/2), Math.sin(this.carRotation) * (this.WHEELBASE/2)];
+			let vector2 = [Math.sin(this.carRotation) * (this.WIDTH/2), Math.cos(this.carRotation) * (this.WIDTH/2)];
+
+			let rightBackWheelX = this.getRealX() + vector1[0] - vector2[0];
+			let rightBackWheelZ = this.getRealZ() + vector1[1] - vector2[1];
+
+			let leftBackWheelX = this.getRealX() + vector1[0] + vector2[0];
+			let leftBackWheelZ = this.getRealZ() + vector1[1] + vector2[1];
+
+			let rightBackWheelY = this.getTerrainHeightInCoords(terrain, rightBackWheelX, rightBackWheelZ);
+			let leftBackWheelY = this.getTerrainHeightInCoords(terrain, leftBackWheelX, leftBackWheelZ);
+
+			let horizontalDistanceBackWheels = Math.sqrt(Math.pow(rightBackWheelX - leftBackWheelX, 2)
+																									+Math.pow(rightBackWheelZ - leftBackWheelZ, 2));
+
+			this.xAngle = Math.atan((rightBackWheelY - leftBackWheelY)/horizontalDistanceBackWheels);
+	}
+
+	calcZAngle(terrain){
+
+		let vector1 = [Math.cos(this.carRotation) * (this.WHEELBASE/2), -Math.sin(this.carRotation) * (this.WHEELBASE/2)];
+		let vector2 = [Math.cos(this.carRotation) * (this.WIDTH/2), Math.sin(-this.carRotation) * (this.WIDTH/2)];
+
+		let rightBackWheelX = this.getRealX() + vector1[0] - vector2[0];
+		let rightBackWheelZ = this.getRealZ() + vector1[1] - vector2[1];
+
+		let rightBackWheelY = this.getTerrainHeightInCoords(terrain, rightBackWheelX, rightBackWheelZ);
+
+		let rightFrontWheelX = this.getRealX() - vector1[0] - vector2[0];
+		let rightFrontWheelZ = this.getRealZ() - vector1[1] - vector2[1];
+
+		let rightFrontWheelY = this.getTerrainHeightInCoords(terrain, rightFrontWheelX, rightFrontWheelZ);
+
+		let horizontalDistanceRightWheels = Math.sqrt(Math.pow(rightBackWheelX - rightFrontWheelX, 2)
+																								+Math.pow(rightBackWheelZ - rightFrontWheelZ, 2));
+
+		this.zAngle = -Math.atan((rightFrontWheelY - rightBackWheelY) / horizontalDistanceRightWheels);
 	}
 
 	getRealX(){
