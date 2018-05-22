@@ -55,7 +55,7 @@ class LightingScene extends CGFscene
 
 	initCameras()
 	{
-		this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(0, 20, 0), vec3.fromValues(20, 0, 20));
+		this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(-30, 20, -30), vec3.fromValues(0, 0, 0));
 	};
 
 	initLights()
@@ -121,7 +121,7 @@ class LightingScene extends CGFscene
 		this.updateLights();
 
 		// Draw axis
-		//this.axis.display();
+		this.axis.display();
 
 		this.materialDefault.apply();
 
@@ -138,7 +138,7 @@ class LightingScene extends CGFscene
 		this.popMatrix();
 
 		this.pushMatrix();
-		this.translate(20, 0, 20);
+		this.translate(25, 0, 25);
 		this.crane.display();
 		this.popMatrix();
 
@@ -165,8 +165,7 @@ class LightingScene extends CGFscene
 		this.car.update(dTime, this.terrain);
 	}
 
-	//TODO DELTE THIS
 	liftCar(){
-			this.car.liftCar();
+		this.car.y += 10;
 	}
 };

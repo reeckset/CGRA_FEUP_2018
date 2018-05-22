@@ -25,8 +25,8 @@ class MyCar extends CGFobject
 		this.STEERING_SPRING = 1; //Determines how fast the front wheels fall back in place proportionally to the car's speed
 		this.TURNING_SENSITIVITY = 0.01; //Determines how much the car turns
 		this.MAX_SPEED = 20; //Maximum speed for the car
-		this.TURNING_OVER_SPEED = 0.3; //Determines how much the wheel can turn proportionally to the car's speed
-
+		this.TURNING_OVER_SPEED = 0.2; //Determines how much the wheel can turn proportionally to the car's speed
+		this.DRIFT_MODE = false;
 		this.loadTextures();
 	}
 
@@ -87,10 +87,12 @@ class MyCar extends CGFobject
 
 	display(){
 		this.scene.pushMatrix();
-		this.scene.translate(this.x, this.y, this.z);
-		this.scene.translate(this.WHEELBASE/2, 0, 0);
+		this.scene.translate(this.x - this.WHEELBASE, this.y, this.z);
+		if(!this.DRIFT_MODE) this.scene.translate(this.WHEELBASE/2, 0, 0);
+		else this.scene.translate(-this.speed / 8, 0, 0);
 		this.scene.rotate(this.carRotation, 0, 1, 0);
-		this.scene.translate(-this.WHEELBASE/2, 0, 0);
+		if(!this.DRIFT_MODE) this.scene.translate(-this.WHEELBASE/2, 0, 0);
+		else this.scene.translate(this.speed / 8, 0, 0);
 			//Display wheels (Arguments are X,Y,Z,willFaceZPositive,isFrontWheel)
 			this.displayWheel(-this.WHEELBASE/2,this.WHEEL_RADIUS,this.WIDTH/2,false, true);
 			this.displayWheel(-this.WHEELBASE/2,this.WHEEL_RADIUS,-this.WIDTH/2,true,true);
@@ -162,12 +164,13 @@ class MyCar extends CGFobject
 		this.y += this.vy * dTime;
 		this.z += this.vz * dTime;
 
-		if(!this.isGroundedOnTerrain(terrain)){
+		/*if(!this.isGroundedOnTerrain(terrain)){
 			this.vy -= this.GRAVITY * dTime;
-		}
+		}*/
+		//this.y = 0;
+		this.y = this.getTerrainHeightInCoords(terrain, this.getRealX(), this.getRealZ());
 
 		this.wheelSpeed = this.speed/(2*Math.PI*this.WHEEL_RADIUS);
-
 	}
 
 	initPositionAndSpeed(){
@@ -304,16 +307,55 @@ class MyCar extends CGFobject
 		return Math.max(Math.min(this.MAX_WHEEL_ANGLE / (this.TURNING_OVER_SPEED*Math.abs(this.speed)) || this.MAX_WHEEL_ANGLE, this.MAX_WHEEL_ANGLE), 0);
 	}
 
-	//TODO DELETE THIS,
-	liftCar(){
-		this.y = 10;
+	getTerrainHeightInCoords(terrain, x,z){
+		let matrixX = (x+terrain.SIZE/2)/terrain.SIZE*(terrain.matrix.length-1);
+	 	let matrixZ = (z+terrain.SIZE/2)/terrain.SIZE*(terrain.matrix.length-1);
+
+		let matrixXlower = Math.floor(matrixX);
+		let matrixXhigher = Math.ceil(matrixX);
+		let matrixZlower = Math.floor(matrixZ);
+		let matrixZhigher = Math.ceil(matrixZ);
+
+		let matrixXPercent = (matrixX-matrixXlower)/(matrixXhigher - matrixXlower);
+		let matrixZPercent = (matrixZ-matrixZlower)/(matrixZhigher - matrixZlower)
+
+		let heightXlZl = terrain.matrix[matrixZlower][matrixXlower];
+		let heightXlZh = terrain.matrix[matrixZhigher][matrixXlower];
+		let heightXhZl = terrain.matrix[matrixZlower][matrixXhigher];
+		let heightXhZh = terrain.matrix[matrixZhigher][matrixXhigher];
+
+		if(matrixZPercent + matrixXPercent <  1){
+			console.log("Triangle 1");
+			console.log("Points Height: 1:" + heightXlZl + ", 2: " + heightXlZh + ", 3: " + heightXhZl);
+			var vector1 = [0, heightXlZh - heightXlZl, 1];
+			var vector2 = [1, heightXhZl - heightXlZl, 0];
+			var normal = this.cross(vector1, vector2);
+			console.log(vector1 + " ; " + vector2);
+			let d = - (normal[0]*1 + normal[1]*heightXhZl);
+			var getPlaneY = function(x,z){ return - (normal[0]*x + normal[2]*z + d)/normal[1]};
+			return getPlaneY(matrixXPercent, matrixZPercent);
+		}else{
+			console.log("Triangle 2");
+			var vector1 = [0, heightXhZh - heightXhZl, 1];
+			var vector2 = [1, heightXhZh - heightXlZh, 0];
+			var normal = this.cross(vector1, vector2);
+			console.log(vector1 + " - " + vector2);
+			let d = - (normal[0]*1 + normal[1]*heightXhZl + normal[2]*0);
+			var getPlaneY = function(x,z){ return - (normal[0]*x + normal[2]*z + d)/normal[1]};
+			return getPlaneY(matrixXPercent, matrixZPercent);
+		}
 	}
 
-	thrustForward(){
-		this.vx = -1;
+	getRealX(){
+		return this.x;
 	}
 
-	setPos(){
-		this.x = 5;
+	getRealZ(){
+		return	this.z + (this.WHEELBASE/2) * Math.sin(this.carRotation);
 	}
+
+	cross(vector1, vector2){
+		return [vector1[1] * vector2[2] - vector1[2] * vector2[1], vector1[2] * vector2[0] - vector1[0] * vector2[2], vector1[0] * vector2[1] - vector1[1] * vector2[0]]
+	}
+
 };

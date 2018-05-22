@@ -7,10 +7,9 @@
 class MyTerrain extends CGFobject
 {
   createConstants(){
-    this.TEXTURE = '../resources/images/terrain.jpg';
+    this.TEXTURE = '../resources/images/debug_terrain.png';
 
-    this.matrix = [[ 2.0 , 3.0 , 2.0, 4.0, 2.5, 2.4, 2.3, 1.3 ],
-                    [ 2.0 , 3.0 , 2.0, 4.0, 7.5, 6.4, 4.3, 1.3 ],
+    this.matrix = [ [ 2.0 , 3.0 , 2.0, 4.0, 7.5, 6.4, 4.3, 1.3 ],
                     [ 0.0 , 0.0 , 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
                     [ 0.0 , 0.0 , 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
                     [ 0.0 , 0.0 , 2.0, 4.0, 2.5, 2.4, 0.0, 0.0 ],
