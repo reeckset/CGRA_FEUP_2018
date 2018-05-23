@@ -4,7 +4,7 @@
  * @constructor
  */
 
-class MySideMirror extends MyUnitCubeQuad
+class MySideMirror extends MySpecularCube
 {
 	constructor(scene)
 	{
@@ -14,7 +14,6 @@ class MySideMirror extends MyUnitCubeQuad
                 "../resources/images/black.png",
                 "../resources/images/black.png",
                 "../resources/images/black.png");
-    this.frontMaterial.setSpecular(1,1,1,1);
 	};
 
 	display(){
@@ -86,8 +85,8 @@ class MySideMirror extends MyUnitCubeQuad
 	newDefaultMaterial(){
 		let material = new CGFappearance(this.scene);
 		material.setAmbient(0.8,0.8,0.8,1);
-		material.setDiffuse(1,1,1,1);
-		material.setSpecular(0.4,0.4,0.4,1);
+		material.setDiffuse(0.6,0.6,0.6,1);
+		material.setSpecular(1,1,1,1);
 		material.setShininess(120);
 		return material
 	}

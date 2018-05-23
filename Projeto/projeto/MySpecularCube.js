@@ -4,13 +4,13 @@
  * @constructor
  */
 
-class MyUnitCubeQuad extends CGFobject
+class MySpecularCube extends CGFobject
 {
 	constructor(scene, textureTop, textureBottom, textureFront, textureBack, textureLeft, textureRight)
 	{
 		super(scene);
 
-		this.quad = new MyQuad(this.scene, 0,1,0,1);
+		this.quad = new Plane(this.scene, 8, 0,1,0,1);
 		this.createMaterials(textureTop, textureBottom, textureFront, textureBack, textureLeft, textureRight);
 		this.quad.initBuffers();
 	};
@@ -83,10 +83,10 @@ class MyUnitCubeQuad extends CGFobject
 
 	newDefaultMaterial(){
 		let material = new CGFappearance(this.scene);
-		material.setAmbient(0.8,0.8,0.8,1);
-		material.setDiffuse(1,1,1,1);
-		material.setSpecular(0.4,0.4,0.4,1);
-		material.setShininess(120);
+		material.setAmbient(0.3,0.3,0.3,1);
+		material.setDiffuse(0.3,0.3,0.3,1);
+		material.setSpecular(1,1,1,1);
+		material.setShininess(50);
 		return material
 	}
 };

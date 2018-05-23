@@ -73,7 +73,7 @@ class MyCar extends CGFobject
 
 		this.topTrapezoid = new MyTrapezoid(this.scene, 13, 35,
 					this.TOP_TEXTURE, this.EMPTY_TEXTURE, this.SIDE_WINDOWS_TEXTURE, this.SIDE_WINDOWS_INVERTED_TEXTURE, this.FRONT_WINDOW_TEXTURE, this.BACK_WINDOW_TEXTURE);
-		this.base = new MyUnitCubeQuad(this.scene,
+		this.base = new MySpecularCube(this.scene,
 					this.HOOD_TEXTURE, this.EMPTY_TEXTURE, this.SIDE_LOWER_TEXTURE, this.SIDE_LOWER_INVERTED_TEXTURE, this.RADIATOR_TEXTURE, this.BACK_MIDDLE_TEXTURE);
 		this.sideSkirtLeft = new MyTrapezoid(this.scene, 22, -30,
 					this.EMPTY_TEXTURE, this.EMPTY_TEXTURE, this.SIDE_SKIRT_TEXTURE, this.EMPTY_TEXTURE, this.EMPTY_TEXTURE, this.EMPTY_TEXTURE);

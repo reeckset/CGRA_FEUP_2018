@@ -74,7 +74,7 @@ class MyTrapezoid extends CGFobject
 
   generateQuads() {
 
-		this.leftQuad = new MyQuad(this.scene, 0,1,0,1);
+		this.leftQuad = new Plane(this.scene, 20, 0,1,0,1);
 		this.leftQuadRotY = -Math.PI/2;
 		this.leftQuadRotZ = this.alpha - Math.PI/2;
 		this.leftQuadScaleX = 1;
@@ -96,7 +96,7 @@ class MyTrapezoid extends CGFobject
     }
 
 
-		this.topQuad = new MyQuad(this.scene, 0,1,0,1);
+		this.topQuad = new Plane(this.scene, 20, 0,1,0,1);
 		this.topQuadRotY = Math.PI/2;
 		this.topQuadRotZ = Math.PI/2;
 		this.topQuadScaleX = 1;
@@ -109,7 +109,7 @@ class MyTrapezoid extends CGFobject
 
 
 
-		this.rightQuad = new MyQuad(this.scene, 0,1,0,1);
+		this.rightQuad = new Plane(this.scene, 20, 0,1,0,1);
 		this.rightQuadRotY = Math.PI/2;
 		this.rightQuadScaleX = 1;
 		this.rightQuadY = 0;
@@ -131,7 +131,7 @@ class MyTrapezoid extends CGFobject
     }
 
 
-		this.bottomQuad = new MyQuad(this.scene, 0,1,0,1);
+		this.bottomQuad = new Plane(this.scene, 20, 0,1,0,1);
 		this.bottomQuadRotY = -Math.PI/2;
 		this.bottomQuadRotZ = Math.PI/2;
 		this.bottomQuadScaleX = 1;
@@ -232,9 +232,9 @@ class MyTrapezoid extends CGFobject
 
 	newDefaultMaterial(){
 		let material = new CGFappearance(this.scene);
-		material.setAmbient(0.8,0.8,0.8,1);
-		material.setDiffuse(1,1,1,1);
-		material.setSpecular(0.4,0.4,0.4,1);
+		material.setAmbient(0.3,0.3,0.3,1);
+		material.setDiffuse(0.3,0.3,0.3,1);
+		material.setSpecular(1,1,1,1);
 		material.setShininess(120);
 		return material
 	}
