@@ -394,7 +394,7 @@ class MyCar extends CGFobject
 	}
 
 	getRealX(){
-		return this.x;
+		return this.x - (this.WHEELBASE/2) * Math.abs(Math.cos(this.carRotation));
 	}
 
 	getRealZ(){
