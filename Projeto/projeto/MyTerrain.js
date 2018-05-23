@@ -107,8 +107,8 @@ class MyTerrain extends Plane
   createMaterial(texture){
     this.material = new CGFappearance(this.scene);
     this.material.setAmbient(0.3,0.3,0.3,1);
-		this.material.setDiffuse(0.3,0.3,0.3,1);
-		this.material.setSpecular(1,1,1,1);
+		this.material.setDiffuse(0.7,0.7,0.7,1);
+		this.material.setSpecular(0,0,0,1);
 		this.material.setShininess(50);
 		this.material.loadTexture(this.TEXTURE);
   }

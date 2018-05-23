@@ -44,6 +44,8 @@ class LightingScene extends CGFscene
 		this.enable_light_2=true;
 		this.horsepower = 150;
 		this.drift_mode = false;
+		this.show_axis = false;
+		this.show_primary_solids = false;
 
 		//Creating the default material for the scene
 		this.materialDefault = new CGFappearance(this);
@@ -53,6 +55,12 @@ class LightingScene extends CGFscene
 		this.terrain = new MyTerrain(this, 0,1,0,1,0);
 		this.crane = new MyCrane(this);
 		this.water = new Plane(this, 8, 0,1,0,1);
+		this.demo_cylinder = new MyCylinder(this, 8, 8, "../resources/images/feup_logo.jpg", "../resources/images/feup_logo.jpg");
+		this.demo_trapezoid = new MyTrapezoid(this, 50, 0, "../resources/images/feup_logo.jpg",
+																														"../resources/images/feup_logo.jpg",
+																														"../resources/images/feup_logo.jpg",
+																														"../resources/images/feup_logo.jpg",
+																														"../resources/images/feup_logo.jpg");
 	};
 
 	initCameras()
@@ -70,7 +78,7 @@ class LightingScene extends CGFscene
 		this.lights[0].setDiffuse(1, 1, 1, 1);
 		this.lights[0].setSpecular(1,1,1,1);
 		this.lights[0].setQuadraticAttenuation(0);
-		this.lights[0].setLinearAttenuation(0.01);
+		this.lights[0].setLinearAttenuation(0.1);
 		this.lights[0].setConstantAttenuation(0);
 		this.lights[0].enable();
 
@@ -80,7 +88,7 @@ class LightingScene extends CGFscene
 		this.lights[1].setDiffuse(1, 1, 1, 1);
 		this.lights[1].setSpecular(1,1,1,1);
 		this.lights[1].setQuadraticAttenuation(0);
-		this.lights[1].setLinearAttenuation(0.02);
+		this.lights[1].setLinearAttenuation(0.2);
 		this.lights[1].setConstantAttenuation(0);
 		this.lights[1].enable();
 	};
@@ -121,7 +129,7 @@ class LightingScene extends CGFscene
 		this.updateLights();
 
 		// Draw axis
-		this.axis.display();
+		if(this.show_axis) this.axis.display();
 
 		this.materialDefault.apply();
 
@@ -138,9 +146,24 @@ class LightingScene extends CGFscene
 		this.popMatrix();
 
 		this.pushMatrix();
-		this.translate(25, 0, 25);
+		this.translate(10, 0, 25);
 		this.crane.display();
 		this.popMatrix();
+
+		if(this.show_primary_solids) {
+			this.pushMatrix();
+				this.translate(25, 0, 25);
+				this.scale(1,5,1);
+				this.rotate(-Math.PI/2, 1, 0, 0);
+				this.demo_cylinder.display();
+			this.popMatrix();
+
+			this.pushMatrix();
+				this.translate(17, 3, 25);
+				this.scale(5,5,5);
+				this.demo_trapezoid.display();
+			this.popMatrix();
+		}
 
 		this.pushMatrix();
 		this.scale(5,1,5);

@@ -63,7 +63,7 @@ class MyCylinderSide extends CGFobject
 		for(let stack = 0; stack <= this.stacks; stack++){ //add stacks
 			this.vertices.push(Math.cos(angle), Math.sin(angle), stack*stackSize);
 			//add Normals
-			this.texCoords.push(this.currS, this.patchLengthT*(this.stacks-stack));
+			this.texCoords.push(1-this.currS, this.patchLengthT*(this.stacks-stack));
 			this.addQuadNormal(angle);
 		}
 		this.currS -= this.patchLengthS;
