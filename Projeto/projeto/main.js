@@ -18,6 +18,7 @@ serialInclude([
 	'MyTrapezoidQuad.js',
 	'MyInterface.js',
 	'MyCrane.js',
+	'MySideMirror.js',
 
 	main=function() {
 		var app = new CGFapplication(document.body);

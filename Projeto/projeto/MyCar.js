@@ -83,6 +83,7 @@ class MyCar extends CGFobject
 					this.UNDERSIDE_TEXTURE, this.EMPTY_TEXTURE, this.EMPTY_TEXTURE, this.EMPTY_TEXTURE, this.REAR_BUMPER_TEXTURE, this.FRONT_BUMPER_TEXTURE);
 		this.axel = new MyCylinder(this.scene, 6, 6, this.EMPTY_TEXTURE, this.EMPTY_TEXTURE);
 		this.headLight = new MySemiSphere(this.scene, 10, 10, this.HEADLIGHT_TEXTURE);
+		this.mirror = new MySideMirror(this.scene);
 		this.createHeadlightMaterial();
 		this.generateWheel();
 	}
@@ -112,6 +113,8 @@ class MyCar extends CGFobject
 			this.displayBase();
 			this.displaySideSkirts();
 			this.displayHeadlights();
+
+			this.displayMirrors();
 
 		this.scene.popMatrix();
 	}
@@ -280,6 +283,23 @@ class MyCar extends CGFobject
 			this.scene.rotate(Math.PI/2,0,0,1);
 			this.scene.scale(0.15,0.07,0.15);
 			this.headLight.display();
+		this.scene.popMatrix();
+	}
+
+	displayMirrors(){
+		this.scene.pushMatrix();
+			this.scene.translate(-this.WHEELBASE/2 + 0.45,this.RIDE_HEIGHT + 0.5,this.WIDTH/2 + 0.1);
+			this.scene.rotate(Math.PI/2, 0, 1, 0);
+			this.scene.scale(0.2,0.3,0.1);
+			this.mirror.display();
+		this.scene.popMatrix();
+
+		this.scene.pushMatrix();
+			this.scene.scale(1, 1, -1);
+			this.scene.translate(-this.WHEELBASE/2 + 0.45,this.RIDE_HEIGHT + 0.5,this.WIDTH/2 + 0.1);
+			this.scene.rotate(Math.PI/2, 0, 1, 0);
+			this.scene.scale(0.2,-0.3,0.1);
+			this.mirror.display();
 		this.scene.popMatrix();
 	}
 
