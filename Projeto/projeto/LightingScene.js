@@ -146,7 +146,7 @@ class LightingScene extends CGFscene
 		this.popMatrix();
 
 		this.pushMatrix();
-		this.translate(10, 0, 25);
+		this.translate(0, 0, 0);
 		this.crane.display();
 		this.popMatrix();
 
@@ -176,7 +176,7 @@ class LightingScene extends CGFscene
 	};
 
 	update(currTime){
-		var dTime = currTime - this.lastTime;
+		var dTime = this.lastTime ? currTime - this.lastTime : 0;
 		this.lastTime = currTime;
 
 		if(this.gui.isKeyPressed("KeyW")){
@@ -194,6 +194,8 @@ class LightingScene extends CGFscene
 		this.car.update(dTime, this.terrain);
 
 		this.car.DRIFT_MODE = this.drift_mode;
+
+		this.crane.update(dTime);
 	}
 
 	liftCar(){

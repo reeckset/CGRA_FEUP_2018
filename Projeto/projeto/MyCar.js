@@ -70,6 +70,7 @@ class MyCar extends CGFobject
 		this.isTurningWheels = false;
 		this.xAngle = 0;
 		this.zAngle = 0;
+		this.enabled = true;
 
 		this.topTrapezoid = new MyTrapezoid(this.scene, 13, 35,
 					this.TOP_TEXTURE, this.EMPTY_TEXTURE, this.SIDE_WINDOWS_TEXTURE, this.SIDE_WINDOWS_INVERTED_TEXTURE, this.FRONT_WINDOW_TEXTURE, this.BACK_WINDOW_TEXTURE);
@@ -89,6 +90,7 @@ class MyCar extends CGFobject
 	}
 
 	display(){
+		if(!this.enabled) return;
 		this.scene.pushMatrix();
 		this.scene.translate(this.x - this.WHEELBASE, this.y, this.z);
 		if(!this.DRIFT_MODE) this.scene.translate(this.WHEELBASE/2, 0, 0);
@@ -165,6 +167,11 @@ class MyCar extends CGFobject
 		}
 
 		this.carRotation += this.speed*this.frontWheelAngle*this.TURNING_SENSITIVITY;
+
+		if(!this.enabled){
+			this.speed = 0;
+			return;
+		}
 
 		this.vx = -this.speed*Math.cos(this.carRotation);
 		this.vz = this.speed*Math.sin(this.carRotation);

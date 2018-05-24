@@ -4,6 +4,15 @@
  * @constructor
  */
 
+//The Crane will have 6 states, described below:
+// State 0 - The Crane is stopped, and ready to start the full animation
+
+// State 1 - The Crane will rotate on hingeCylinder to pick up the car
+// State 2 - The Crane will rotate back on hingeCylinder to lift up the car
+// State 3 - The Crane will rotate on armCylinder to rotate the car
+// State 4 - The Crane will drop the car down
+// State 5 - The Crane will rotate on armCylinder rotate back to starting position
+
 class MyCrane extends CGFobject
 {
 
@@ -12,22 +21,33 @@ class MyCrane extends CGFobject
 		super(scene);
     this.hingeCylinder = new MyCylinder(scene, 10, 10, "../resources/images/black.png", "../resources/images/black.png");
     this.armCylinder = new MyCylinder(scene, 10, 10, "../resources/images/black.png", "../resources/images/black.png");
-    this.TOP_HINGE_ANGLE = Math.PI/6;
+		this.car = new MyCar(this.scene);
+		this.topHingeAngle = Math.PI/3;
+		this.craneAngle = 0;
+		this.TOP_HINGE_ROTATION_SPEED = 14E-4;
+		this.GRAVITY = 10E-3;
+		this.state = 1; //initial state
   };
 
 	display(){
+		this.scene.pushMatrix();
+			this.scene.rotate(this.craneAngle, 0, 1, 0);
 
     this.scene.pushMatrix();
       this.scene.translate(-5,9,0);
-      this.scene.rotate(Math.PI - this.TOP_HINGE_ANGLE, 0, 0, 1);
-      this.scene.translate(0,5,0);
-      this.scene.rotate(-Math.PI/2, 1, 0, 0);
-      this.displayMagnet();
+
+      this.scene.rotate(Math.PI - this.topHingeAngle, 0, 0, 1);
+
+			this.scene.translate(0,5,0);
+
+			this.scene.rotate(-Math.PI/2, 1, 0, 0);
+			this.displayMagnet();
+
     this.scene.popMatrix();
 
     this.scene.pushMatrix();
       this.scene.translate(-5,9,0);
-      this.scene.rotate(Math.PI - this.TOP_HINGE_ANGLE, 0, 0, 1)
+      this.scene.rotate(Math.PI - this.topHingeAngle, 0, 0, 1)
       this.scene.scale(0.5,-5,0.5);
       this.scene.rotate(Math.PI/2, 1, 0, 0);
       this.armCylinder.display();
@@ -50,14 +70,104 @@ class MyCrane extends CGFobject
       this.scene.rotate(Math.PI/2, -1, 0, 0);
       this.hingeCylinder.display();
     this.scene.popMatrix();
+		this.scene.popMatrix();
 	}
 
   displayMagnet(){
-    this.scene.rotate(-this.TOP_HINGE_ANGLE, 0,1,0);
+		this.scene.pushMatrix();
+    this.scene.rotate(-this.topHingeAngle, 0,1,0);
     this.scene.translate(0,0,2);
-    this.armCylinder.display();
+
+		if(this.state > 1 && this.state < 4){
+			this.scene.pushMatrix();
+				this.scene.translate(3, 0, 2.75);
+				this.scene.rotate(-Math.PI/2, 1, 0, 0);
+				this.car.frontWheelAngle = Math.PI + this.scene.car.frontWheelAngle;
+				this.car.display();
+			this.scene.popMatrix();
+		}
+
+		this.armCylinder.display();
     this.scene.translate(0,0,-2);
     this.scene.scale(0.2,0.2,2);
     this.armCylinder.display();
+		this.scene.popMatrix();
   }
+
+
+	update(dTime) {
+
+		console.log(this.state);
+		switch(this.state) {
+			case 1:
+				this.pickUpCar(dTime);
+				break;
+			case 2:
+				this.liftUpCar(dTime);
+				break;
+			case 3:
+				this.rotateCrane(dTime);
+				break;
+			case 4:
+				this.dropCar(dTime);
+				break;
+			case 5:
+				this.rotateToStartingPosition(dTime);
+				break;
+			default: // case 0
+				break;
+		}
+	}
+
+	pickUpCar(dTime) {
+		if(this.topHingeAngle < Math.PI/6){
+			this.topHingeAngle = Math.PI/6;
+			this.car.carRotation = Math.PI + this.scene.car.carRotation;
+			this.scene.car.enabled = false;
+			this.state = 2;
+		} else {
+			this.topHingeAngle -= dTime * this.TOP_HINGE_ROTATION_SPEED;
+		}
+	}
+
+	liftUpCar(dTime) {
+		if(this.topHingeAngle > Math.PI/3){
+			this.topHingeAngle = Math.PI/3;
+			this.state = 3;
+		} else {
+			this.topHingeAngle += dTime * this.TOP_HINGE_ROTATION_SPEED;
+		}
+	}
+
+	rotateCrane(dTime) {
+		if(this.craneAngle > Math.PI){
+			this.craneAngle = Math.PI;
+			this.scene.car.y = 6;
+			this.state = 4;
+		} else {
+			this.craneAngle += dTime * 2 * this.TOP_HINGE_ROTATION_SPEED;
+		}
+	}
+
+	dropCar(dTime) {
+		if(this.scene.car.y < 1){
+			this.state = 5;
+		} else {
+			if(!this.scene.car.enabled){
+				this.scene.car.x += 10;
+				this.scene.car.carRotation += Math.PI;
+			}
+			this.scene.car.enabled = true;
+
+		}
+	}
+
+	rotateToStartingPosition(dTime) {
+		if(this.craneAngle < 0){
+			this.craneAngle = 0;
+			this.state = 0;
+		} else {
+			this.craneAngle -= dTime * 2 * this.TOP_HINGE_ROTATION_SPEED;
+		}
+	}
 };
