@@ -50,7 +50,7 @@ class MyInterface extends CGFinterface {
 		// this.speed=3;
 		// min and max values can be specified as parameters
 
-		this.gui.add(this.scene, 'horsepower', 60, 600);
+		this.gui.add(this.scene, 'horsepower', 100, 600);
 
     this.initKeys();
 		return true;
