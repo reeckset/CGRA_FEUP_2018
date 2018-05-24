@@ -21,7 +21,7 @@ class MyCrane extends CGFobject
 		super(scene);
     this.hingeCylinder = new MyCylinder(scene, 10, 10, "../resources/images/metal_bolts.jpg", "../resources/images/metal_bolts.jpg");
     this.armCylinder = new MyCylinder(scene, 10, 10, "../resources/images/metal_bolts.jpg", "../resources/images/metal_bolts.jpg");
-		this.magnetCylinder = new MyCylinder(scene, 10, 10, "../resources/images/black.png", "../resources/images/black.png");
+		this.magnetCylinder = new MyCylinder(scene, 10, 10, "../resources/images/magnet.jpg", "../resources/images/magnet.jpg");
 		this.car = new MyCar(this.scene);
 		this.topHingeAngle = Math.PI/3;
 		this.craneAngle = 0;
