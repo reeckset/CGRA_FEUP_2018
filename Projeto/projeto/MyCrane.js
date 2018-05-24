@@ -19,14 +19,15 @@ class MyCrane extends CGFobject
 	constructor(scene)
 	{
 		super(scene);
-    this.hingeCylinder = new MyCylinder(scene, 10, 10, "../resources/images/black.png", "../resources/images/black.png");
-    this.armCylinder = new MyCylinder(scene, 10, 10, "../resources/images/black.png", "../resources/images/black.png");
+    this.hingeCylinder = new MyCylinder(scene, 10, 10, "../resources/images/metal_bolts.jpg", "../resources/images/metal_bolts.jpg");
+    this.armCylinder = new MyCylinder(scene, 10, 10, "../resources/images/metal_bolts.jpg", "../resources/images/metal_bolts.jpg");
+		this.magnetCylinder = new MyCylinder(scene, 10, 10, "../resources/images/black.png", "../resources/images/black.png");
 		this.car = new MyCar(this.scene);
 		this.topHingeAngle = Math.PI/3;
 		this.craneAngle = 0;
 		this.TOP_HINGE_ROTATION_SPEED = 14E-4;
 		this.GRAVITY = 10E-3;
-		this.state = 1; //initial state
+		this.state = 0; //initial state
   };
 
 	display(){
@@ -48,7 +49,7 @@ class MyCrane extends CGFobject
     this.scene.pushMatrix();
       this.scene.translate(-5,9,0);
       this.scene.rotate(Math.PI - this.topHingeAngle, 0, 0, 1)
-      this.scene.scale(0.5,-5,0.5);
+      this.scene.scale(0.5,-5,-0.5);
       this.scene.rotate(Math.PI/2, 1, 0, 0);
       this.armCylinder.display();
     this.scene.popMatrix();
@@ -87,7 +88,7 @@ class MyCrane extends CGFobject
 			this.scene.popMatrix();
 		}
 
-		this.armCylinder.display();
+		this.magnetCylinder.display();
     this.scene.translate(0,0,-2);
     this.scene.scale(0.2,0.2,2);
     this.armCylinder.display();
@@ -142,7 +143,7 @@ class MyCrane extends CGFobject
 	rotateCrane(dTime) {
 		if(this.craneAngle > Math.PI){
 			this.craneAngle = Math.PI;
-			this.scene.car.y = 6;
+			this.scene.car.y = 3;
 			this.state = 4;
 		} else {
 			this.craneAngle += dTime * 2 * this.TOP_HINGE_ROTATION_SPEED;
@@ -150,11 +151,11 @@ class MyCrane extends CGFobject
 	}
 
 	dropCar(dTime) {
-		if(this.scene.car.y < 1){
+		if(!this.scene.car.isGroundedOnTerrain){
 			this.state = 5;
 		} else {
 			if(!this.scene.car.enabled){
-				this.scene.car.x += 10;
+				this.scene.car.x += 17;
 				this.scene.car.carRotation += Math.PI;
 			}
 			this.scene.car.enabled = true;

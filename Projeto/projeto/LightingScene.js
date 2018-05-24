@@ -51,10 +51,17 @@ class LightingScene extends CGFscene
 		this.materialDefault = new CGFappearance(this);
 		this.materialDefault.setDiffuse(1,1,1,1);
 
+		this.materialPickupZone = new CGFappearance(this);
+		this.materialPickupZone.setDiffuse(1,1,1,1);
+		this.materialPickupZone.setAmbient(0.7,0.7,0.7,1);
+		this.materialPickupZone.setSpecular(0.4,0.4,0.4,1);
+		this.materialPickupZone.setShininess(120);
+		this.materialPickupZone.loadTexture("../resources/images/no_parking.jpg");
+
 		this.car = new MyCar(this);
 		this.terrain = new MyTerrain(this, 0,1,0,1,0);
 		this.crane = new MyCrane(this);
-		this.water = new Plane(this, 8, 0,1,0,1);
+		this.pickUpZone = new Plane(this, 8, 0,1,0,1);
 		this.demo_cylinder = new MyCylinder(this, 8, 8, "../resources/images/feup_logo.jpg", "../resources/images/feup_logo.jpg");
 		this.demo_trapezoid = new MyTrapezoid(this, 50, 0, "../resources/images/feup_logo.jpg",
 																														"../resources/images/feup_logo.jpg",
@@ -146,7 +153,7 @@ class LightingScene extends CGFscene
 		this.popMatrix();
 
 		this.pushMatrix();
-		this.translate(0, 0, 0);
+		this.translate(-7, 0, 15);
 		this.crane.display();
 		this.popMatrix();
 
@@ -166,9 +173,12 @@ class LightingScene extends CGFscene
 		}
 
 		this.pushMatrix();
-		this.scale(5,1,5);
-		this.translate(-5, -0.1, -5);
-		this.water.display();
+		this.translate(-16, 0.01, 15);
+		this.scale(5,1,4);
+		this.rotate(Math.PI, 0, 1, 0);
+		this.rotate(-Math.PI/2, 1,0,0);
+		this.materialPickupZone.apply();
+		this.pickUpZone.display();
 		this.popMatrix();
 
 
@@ -196,6 +206,17 @@ class LightingScene extends CGFscene
 		this.car.DRIFT_MODE = this.drift_mode;
 
 		this.crane.update(dTime);
+
+		//return this.x - (this.WHEELBASE/2) * Math.abs(Math.cos(this.carRotation));
+
+		if(this.car.x - (this.car.WHEELBASE/2) * Math.cos(this.car.carRotation) > -17
+		&& this.car.x - (this.car.WHEELBASE/2) * Math.cos(this.car.carRotation) < -13
+			&& this.car.getRealZ() > 14 && this.car.getRealZ() < 16){
+				if(this.crane.state == 0){
+					this.crane.state = 1;
+				}
+				this.car.speed = 0;
+		}
 	}
 
 	liftCar(){

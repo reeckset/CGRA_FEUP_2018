@@ -71,6 +71,7 @@ class MyCar extends CGFobject
 		this.xAngle = 0;
 		this.zAngle = 0;
 		this.enabled = true;
+		this.isGroundedOnTerrain = false;
 
 		this.topTrapezoid = new MyTrapezoid(this.scene, 13, 35,
 					this.TOP_TEXTURE, this.EMPTY_TEXTURE, this.SIDE_WINDOWS_TEXTURE, this.SIDE_WINDOWS_INVERTED_TEXTURE, this.FRONT_WINDOW_TEXTURE, this.BACK_WINDOW_TEXTURE);
@@ -180,9 +181,9 @@ class MyCar extends CGFobject
 		this.y += this.vy * dTime;
 		this.z += this.vz * dTime;
 
-		/*if(!this.isGroundedOnTerrain(terrain)){
+		if(!this.isGroundedOnTerrain){
 			this.vy -= this.GRAVITY * dTime;
-		}*/
+		}
 		//this.y = 0;
 		this.handleTerrainCollision(terrain);
 
@@ -196,29 +197,6 @@ class MyCar extends CGFobject
 		this.vx = 0;
 		this.vy = 0;
 		this.vz = 0;
-	}
-
-	isGroundedOnTerrain(terrain){
-		var distanceToCurrentPosition = Infinity;
-		var nextY;
-		var nextX;
-		for(var z = 0; z < terrain.matrix.length; z++){
-			for(var x = 0; x < terrain.matrix.length; x++){
-				let realX = x*terrain.CELL_SIZE-terrain.SIZE/2;
-				let realZ = z*terrain.CELL_SIZE-terrain.SIZE/2;
-				let currDistance = ((realX-this.x)*(realX-this.x)+(realZ*this.z)*(realZ*this.z));
-				if(currDistance < distanceToCurrentPosition){
-					distanceToCurrentPosition = currDistance;
-					nextY = terrain.matrix[z][x];
-					nextX = realX;
-				}
-			}
-		}
-		if(nextY > this.y){
-			this.y = nextY;
-			return true;
-		}
-		return false;
 	}
 
 	displayTopTrapezoid(){
@@ -375,7 +353,13 @@ class MyCar extends CGFobject
 	}
 
 	handleTerrainCollision(terrain){
-		this.y = this.getTerrainHeightInCoords(terrain, this.getRealX(), this.getRealZ());
+		let groundY = this.getTerrainHeightInCoords(terrain, this.getRealX(), this.getRealZ());
+		if(groundY > this.y){
+			this.y = groundY;
+			this.isGroundedOnTerrain = true;
+		}else{
+			this.isGroundedOnTerrain = false;
+		}
 		this.calcZAngle(terrain);
 		this.calcXAngle(terrain);
 	}
