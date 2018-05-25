@@ -245,6 +245,7 @@ class LightingScene extends CGFscene
 		&& this.car.x - (this.car.WHEELBASE/2) * Math.cos(this.car.carRotation) < -13
 			&& this.car.getRealZ() > 14 && this.car.getRealZ() < 16){
 				if(this.crane.state == 0){
+					this.crane.car.updateTexture();
 					this.crane.state = 1;
 				}
 				this.car.speed = 0;

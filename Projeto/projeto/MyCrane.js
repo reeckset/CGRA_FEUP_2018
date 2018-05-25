@@ -141,7 +141,7 @@ class MyCrane extends CGFobject
 	rotateCrane(dTime) {
 		if(this.craneAngle > Math.PI){
 			this.craneAngle = Math.PI;
-			this.scene.car.y = 3;
+			this.scene.car.y = 2.5;
 			this.state = 4;
 		} else {
 			this.craneAngle += dTime * 2 * this.TOP_HINGE_ROTATION_SPEED;
@@ -153,7 +153,7 @@ class MyCrane extends CGFobject
 			this.state = 5;
 		} else {
 			if(!this.scene.car.enabled){
-				this.scene.car.x += 17;
+				this.scene.car.x = 4;
 				this.scene.car.carRotation += Math.PI;
 			}
 			this.scene.car.enabled = true;
