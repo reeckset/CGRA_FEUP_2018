@@ -33,9 +33,9 @@ class MySemiSphere extends CGFobject
 	this.initGLBuffers();
 }
 
-	displayTextured(){
+	display(){
 		this.material.apply();
-		this.display();
+		super.display();
 	}
 
 

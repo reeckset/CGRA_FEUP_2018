@@ -28,22 +28,24 @@ class MyInterface extends CGFinterface {
 		// the identifier 'doSomething' must be a function declared as part of that object (i.e. a member of the scene class)
 		// e.g. LightingScene.prototype.doSomething = function () { console.log("Doing something..."); };
 
-    this.gui.add(this.scene, 'show_axis');
-    this.gui.add(this.scene, 'show_primary_solids');
-    this.gui.add(this.scene, 'drift_mode');
-
+    this.gui.add(this.scene, 'show_axis').name('Apresentar Eixos');
+    this.gui.add(this.scene, 'show_primary_solids').name('Apresentar Sólidos de Demonstração');
+    this.gui.add(this.scene, 'drift_mode').name('Modo de Drift');
+    this.gui.add(this.scene, 'selectedAppearance', {'Regular':0, 'Camo':1}).onChange((value) => {
+      this.scene.currVehicleAppearance = this.scene.vehicleAppearances[this.scene.selectedAppearance];
+      this.scene.car.updateTexture();
+    });
 
 		// add a group of controls (and open/expand by defult)
 
-		var group=this.gui.addFolder("Options");
-		group.open();
+		var group=this.gui.addFolder("Lights");
 
 		// add two check boxes to the group. The identifiers must be members variables of the scene initialized in scene.init as boolean
 		// e.g. this.option1=true; this.option2=false;
 
-    group.add(this.scene, 'enable_lights');
-		group.add(this.scene, 'enable_light_1');
-		group.add(this.scene, 'enable_light_2');
+    group.add(this.scene, 'enable_lights').name('Ativar todas as luzes');
+		group.add(this.scene, 'enable_light_1').name('Ativar luz 1');
+		group.add(this.scene, 'enable_light_2').name('Ativar luz 2');
 
 		// add a slider
 		// must be a numeric variable of the scene, initialized in scene.init e.g.

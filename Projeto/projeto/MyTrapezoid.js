@@ -9,7 +9,7 @@ class MyTrapezoid extends CGFobject
 
   //steepnessPercentage is the amount of steepness of the sides of the trapezoid
 	//sideShiftPercentage is the shift to either the left or the right (from -100 to 100)
-	constructor(scene, steepnessPercentage, sideShiftPercentage, textureTop, textureBottom, textureFront, textureBack, textureLeft, textureRight)
+	constructor(scene, steepnessPercentage, sideShiftPercentage, topMaterial, bottomMaterial, frontMaterial, backMaterial, leftMaterial, rightMaterial)
 	{
 		super(scene);
 		steepnessPercentage = Math.min(Math.max(steepnessPercentage, 0), 100); //Limit steepness
@@ -24,25 +24,19 @@ class MyTrapezoid extends CGFobject
     this.width = 1;
 
 		this.trapezoid = new MyTrapezoidQuad(this.scene, this.alpha, this.beta, 0, 1, 0, 1);
-		this.createMaterials(textureTop, textureBottom, textureFront, textureBack, textureLeft, textureRight);
+
+		this.topMaterial = topMaterial;
+		this.leftMaterial = leftMaterial;
+		this.rightMaterial = rightMaterial;
+		this.bottomMaterial = bottomMaterial;
+		this.frontMaterial = frontMaterial;
+		this.backMaterial = backMaterial;
+
 		this.initBuffers();
 	};
 
   initBuffers()
 	{
-
-
-
-
-    /**
-    /////////////// TO DO ////////////////
-    */
-
-
-
-
-
-
 		// Generate vertices and normals
 		this.vertices = [];
 		this.normals = [];
@@ -208,35 +202,6 @@ class MyTrapezoid extends CGFobject
 		this.backMaterial.apply();
 		this.backTrapezoid.display();
 		this.scene.popMatrix();
-	}
-
-	createMaterials(textureTop, textureBottom, textureFront, textureBack, textureLeft, textureRight){
-		this.topMaterial = this.newDefaultMaterial();
-		this.topMaterial.loadTexture(textureTop);
-
-		this.bottomMaterial = this.newDefaultMaterial();
-		this.bottomMaterial.loadTexture(textureBottom);
-
-		this.frontMaterial = this.newDefaultMaterial();
-		this.frontMaterial.loadTexture(textureFront);
-
-		this.backMaterial = this.newDefaultMaterial();
-		this.backMaterial.loadTexture(textureBack);
-
-		this.leftMaterial = this.newDefaultMaterial();
-		this.leftMaterial.loadTexture(textureLeft);
-
-		this.rightMaterial = this.newDefaultMaterial();
-		this.rightMaterial.loadTexture(textureRight);
-	}
-
-	newDefaultMaterial(){
-		let material = new CGFappearance(this.scene);
-		material.setAmbient(0.3,0.3,0.3,1);
-		material.setDiffuse(0.3,0.3,0.3,1);
-		material.setSpecular(1,1,1,1);
-		material.setShininess(120);
-		return material
 	}
 
 };

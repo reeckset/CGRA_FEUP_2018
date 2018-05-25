@@ -7,14 +7,13 @@
 class MyCylinder extends CGFobject
 {
 
-	constructor(scene, slices, stacks, sideTexture, baseTexture)
+	constructor(scene, slices, stacks, materialSide, materialBase)
 	{
 			super(scene);
       this.myCylinderSide = new MyCylinderSide(this.scene, slices, stacks);
       this.myCircle = new MyCircle(this.scene, slices);
-
-			this.createMaterials(sideTexture, baseTexture);
-
+			this.materialSide = materialSide;
+			this.materialBase = materialBase;
 			this.initBuffers();
 	}
 		initBuffers(){

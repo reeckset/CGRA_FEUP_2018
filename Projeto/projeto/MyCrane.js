@@ -19,10 +19,10 @@ class MyCrane extends CGFobject
 	constructor(scene)
 	{
 		super(scene);
-    this.hingeCylinder = new MyCylinder(scene, 10, 10, "../resources/images/metal_bolts.jpg", "../resources/images/metal_bolts.jpg");
-    this.armCylinder = new MyCylinder(scene, 10, 10, "../resources/images/metal_bolts.jpg", "../resources/images/metal_bolts.jpg");
-		this.magnetCylinder = new MyCylinder(scene, 10, 10, "../resources/images/magnet.jpg", "../resources/images/magnet.jpg");
-		this.car = new MyCar(this.scene);
+    this.hingeCylinder = new MyCylinder(scene, 10, 10, this.createMaterial("../resources/images/metal_bolts.jpg"), this.createMaterial("../resources/images/metal_bolts.jpg"));
+    this.armCylinder = new MyCylinder(scene, 10, 10, this.createMaterial("../resources/images/metal_bolts.jpg"), this.createMaterial("../resources/images/metal_bolts.jpg"));
+		this.magnetCylinder = new MyCylinder(scene, 10, 10, this.createMaterial("../resources/images/magnet.jpg"), this.createMaterial("../resources/images/magnet.jpg"));
+		this.car = new MyVehicle(this.scene);
 		this.topHingeAngle = Math.PI/3;
 		this.craneAngle = 0;
 		this.TOP_HINGE_ROTATION_SPEED = 14E-4;
@@ -97,8 +97,6 @@ class MyCrane extends CGFobject
 
 
 	update(dTime) {
-
-		console.log(this.state);
 		switch(this.state) {
 			case 1:
 				this.pickUpCar(dTime);
@@ -170,5 +168,15 @@ class MyCrane extends CGFobject
 		} else {
 			this.craneAngle -= dTime * 2 * this.TOP_HINGE_ROTATION_SPEED;
 		}
+	}
+
+	createMaterial(texture){
+		let material = new CGFappearance(this.scene);
+		material.setAmbient(0.8,0.8,0.8,1);
+		material.setDiffuse(1,1,1,1);
+		material.setSpecular(0.4,0.4,0.4,1);
+		material.setShininess(120);
+		material.loadTexture(texture);
+    return material;
 	}
 };

@@ -4,16 +4,16 @@
  * @constructor
  */
 
-class MySideMirror extends MySpecularCube
+class MySideMirror extends MyCube
 {
-	constructor(scene)
+	constructor(scene, blackMaterial, glassMaterial)
 	{
-		super(scene, "../resources/images/black.png",
-                "../resources/images/black.png",
-                "../resources/images/glass.png",
-                "../resources/images/black.png",
-                "../resources/images/black.png",
-                "../resources/images/black.png");
+		super(scene, blackMaterial,
+                blackMaterial,
+                glassMaterial,
+                blackMaterial,
+                blackMaterial,
+                blackMaterial);
 	};
 
 	display(){
@@ -60,34 +60,5 @@ class MySideMirror extends MySpecularCube
 			this.quad.display();
 			this.scene.popMatrix();
 			this.scene.popMatrix();
-	}
-
-	createMaterials(textureTop, textureBottom, textureFront, textureBack, textureLeft, textureRight){
-		this.topMaterial = this.newDefaultMaterial();
-		this.topMaterial.loadTexture(textureTop);
-
-		this.bottomMaterial = this.newDefaultMaterial();
-		this.bottomMaterial.loadTexture(textureBottom);
-
-		this.frontMaterial = this.newDefaultMaterial();
-		this.frontMaterial.loadTexture(textureFront);
-
-		this.backMaterial = this.newDefaultMaterial();
-		this.backMaterial.loadTexture(textureBack);
-
-		this.leftMaterial = this.newDefaultMaterial();
-		this.leftMaterial.loadTexture(textureLeft);
-
-		this.rightMaterial = this.newDefaultMaterial();
-		this.rightMaterial.loadTexture(textureRight);
-	}
-
-	newDefaultMaterial(){
-		let material = new CGFappearance(this.scene);
-		material.setAmbient(0.8,0.8,0.8,1);
-		material.setDiffuse(0.6,0.6,0.6,1);
-		material.setSpecular(1,1,1,1);
-		material.setShininess(120);
-		return material
 	}
 };

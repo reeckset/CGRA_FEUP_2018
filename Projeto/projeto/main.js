@@ -6,19 +6,20 @@ serialInclude([
 	'../lib/CGF.js',
 	'LightingScene.js',
 	'MyQuad.js',
-	'MySpecularCube.js',
+	'MyCube.js',
 	'Plane.js',
 	'MyCylinderSide.js',
 	'MySemiSphere.js',
 	'MyCircle.js',
 	'MyCylinder.js',
-	'MyCar.js',
+	'MyVehicle.js',
 	'MyTerrain.js',
 	'MyTrapezoid.js',
 	'MyTrapezoidQuad.js',
 	'MyInterface.js',
 	'MyCrane.js',
 	'MySideMirror.js',
+	'VehicleAppearance.js',
 
 	main=function() {
 		var app = new CGFapplication(document.body);

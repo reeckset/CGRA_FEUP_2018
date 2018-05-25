@@ -58,16 +58,48 @@ class LightingScene extends CGFscene
 		this.materialPickupZone.setShininess(120);
 		this.materialPickupZone.loadTexture("../resources/images/no_parking.jpg");
 
-		this.car = new MyCar(this);
+
+		this.vehicleAppearances = [ new VehicleAppearance(this,
+																											'../resources/images/hummer_top.jpg',
+																											'../resources/images/hummer_front_window.jpg',
+																											'../resources/images/hummer_side_windows.png',
+																											'../resources/images/hummer_side_windows_inverted.png',
+																											'../resources/images/hummer_back_window.jpg',
+																											'../resources/images/hummer_side_lower.png',
+																											'../resources/images/hummer_side_lower_inverted.png',
+																											'../resources/images/hummer_side_skirt.png',
+																											'../resources/images/hummer_side_skirt_inverted.png',
+																											'../resources/images/hummer_back_middle.png',
+																											'../resources/images/hummer_front_radiator.jpg',
+																											'../resources/images/hummer_hood.jpg',
+																											'../resources/images/wheel_side.jpg'),
+																new VehicleAppearance(this,
+																											'../resources/images/camo/hummer_top.jpg',
+																											'../resources/images/camo/hummer_front_window.jpg',
+																											'../resources/images/camo/hummer_side_windows.png',
+																											'../resources/images/camo/hummer_side_windows_inverted.png',
+																											'../resources/images/camo/hummer_back_window.jpg',
+																											'../resources/images/camo/hummer_side_lower.png',
+																											'../resources/images/camo/hummer_side_lower_inverted.png',
+																											'../resources/images/camo/hummer_side_skirt.png',
+																											'../resources/images/camo/hummer_side_skirt_inverted.png',
+																											'../resources/images/camo/hummer_back_middle.png',
+																											'../resources/images/camo/hummer_front_radiator.jpg',
+																											'../resources/images/camo/hummer_hood.jpg',
+																											'../resources/images/camo/wheel_side.jpg')];
+		this.selectedAppearance = 0;
+		this.currVehicleAppearance = this.vehicleAppearances[this.selectedAppearance];
+		this.car = new MyVehicle(this);
 		this.terrain = new MyTerrain(this, 0,1,0,1,0);
 		this.crane = new MyCrane(this);
 		this.pickUpZone = new Plane(this, 8, 0,1,0,1);
-		this.demo_cylinder = new MyCylinder(this, 8, 8, "../resources/images/feup_logo.jpg", "../resources/images/feup_logo.jpg");
-		this.demo_trapezoid = new MyTrapezoid(this, 50, 0, "../resources/images/feup_logo.jpg",
-																														"../resources/images/feup_logo.jpg",
-																														"../resources/images/feup_logo.jpg",
-																														"../resources/images/feup_logo.jpg",
-																														"../resources/images/feup_logo.jpg");
+		this.demo_cylinder = new MyCylinder(this, 8, 8, this.createMaterial("../resources/images/feup_logo.jpg"), this.createMaterial("../resources/images/feup_logo.jpg"));
+		this.demo_trapezoid = new MyTrapezoid(this, 50, 0, this.createMaterial("../resources/images/feup_logo.jpg"),
+																														this.createMaterial("../resources/images/feup_logo.jpg"),
+																														this.createMaterial("../resources/images/feup_logo.jpg"),
+																														this.createMaterial("../resources/images/feup_logo.jpg"),
+																														this.createMaterial("../resources/images/feup_logo.jpg"));
+
 	};
 
 	initCameras()
@@ -221,5 +253,15 @@ class LightingScene extends CGFscene
 
 	liftCar(){
 		this.car.y += 10;
+	}
+
+	createMaterial(texture){
+		let material = new CGFappearance(this);
+		material.setAmbient(0.8,0.8,0.8,1);
+		material.setDiffuse(1,1,1,1);
+		material.setSpecular(0.4,0.4,0.4,1);
+		material.setShininess(120);
+		material.loadTexture(texture);
+    return material;
 	}
 };

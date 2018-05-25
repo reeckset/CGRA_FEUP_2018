@@ -114,7 +114,6 @@ class MyTerrain extends Plane
         let secondNormal = this.cross(vectorPositiveZ, [0,0,1]);
         let thirdNormal = this.cross(vectorNegativeX, [1,0,0]);
         let forthNormal = this.cross(vectorPositiveX, [1,0,0]);
-        console.log(i + ", " + j + ", point: " + currentPoint);
 
         let x =  (firstNormal[0] + secondNormal[0] + thirdNormal[0] + forthNormal[0])/4;
         let y = (firstNormal[1] + secondNormal[1] + thirdNormal[1] + forthNormal[1])/4;
