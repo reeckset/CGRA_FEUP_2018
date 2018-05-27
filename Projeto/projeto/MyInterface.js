@@ -31,7 +31,7 @@ class MyInterface extends CGFinterface {
     this.gui.add(this.scene, 'show_axis').name('Apresentar Eixos');
     this.gui.add(this.scene, 'show_primary_solids').name('Apresentar Sólidos de Demonstração');
     this.gui.add(this.scene, 'drift_mode').name('Modo de Drift');
-    this.gui.add(this.scene, 'selectedAppearance', {'Regular':0, 'Camo':1}).onChange((value) => {
+    this.gui.add(this.scene, 'selectedAppearance', {'Regular':0, 'Camo':1, 'MLG360':2}).onChange((value) => {
       this.scene.currVehicleAppearance = this.scene.vehicleAppearances[this.scene.selectedAppearance];
       this.scene.car.updateTexture();
     });

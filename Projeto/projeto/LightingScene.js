@@ -86,7 +86,22 @@ class LightingScene extends CGFscene
 																											'../resources/images/camo/hummer_back_middle.png',
 																											'../resources/images/camo/hummer_front_radiator.jpg',
 																											'../resources/images/camo/hummer_hood.jpg',
-																											'../resources/images/camo/wheel_side.jpg')];
+																											'../resources/images/camo/wheel_side.jpg'),
+																new VehicleAppearance(this,
+																											'../resources/images/cena/hummer_top.jpg',
+																											'../resources/images/cena/hummer_front_window.jpg',
+																											'../resources/images/cena/hummer_side_windows.png',
+																											'../resources/images/cena/hummer_side_windows_inverted.png',
+																											'../resources/images/cena/hummer_back_window.jpg',
+																											'../resources/images/cena/hummer_side_lower.png',
+																											'../resources/images/cena/hummer_side_lower_inverted.png',
+																											'../resources/images/cena/hummer_side_skirt.png',
+																											'../resources/images/cena/hummer_side_skirt_inverted.png',
+																											'../resources/images/cena/hummer_back_middle.png',
+																											'../resources/images/cena/hummer_front_radiator.jpg',
+																											'../resources/images/cena/hummer_hood.jpg',
+																											'../resources/images/cena/wheel_side.jpg')
+																										];
 		this.selectedAppearance = 0;
 		this.currVehicleAppearance = this.vehicleAppearances[this.selectedAppearance];
 		this.car = new MyVehicle(this);
@@ -95,6 +110,7 @@ class LightingScene extends CGFscene
 		this.pickUpZone = new Plane(this, 8, 0,1,0,1);
 		this.demo_cylinder = new MyCylinder(this, 8, 8, this.createMaterial("../resources/images/feup_logo.jpg"), this.createMaterial("../resources/images/feup_logo.jpg"));
 		this.demo_trapezoid = new MyTrapezoid(this, 50, 0, this.createMaterial("../resources/images/feup_logo.jpg"),
+																														this.createMaterial("../resources/images/feup_logo.jpg"),
 																														this.createMaterial("../resources/images/feup_logo.jpg"),
 																														this.createMaterial("../resources/images/feup_logo.jpg"),
 																														this.createMaterial("../resources/images/feup_logo.jpg"),
