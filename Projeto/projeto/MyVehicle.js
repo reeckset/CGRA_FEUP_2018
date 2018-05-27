@@ -433,5 +433,7 @@ class MyVehicle extends CGFobject
 
 		this.sideSkirtLeft.frontMaterial = currAspect.leftSkirt;
 		this.sideSkirtRight.backMaterial = currAspect.rightSkirt;
+
+		this.wheel.materialBase = currAspect.wheel;
 	}
 };
